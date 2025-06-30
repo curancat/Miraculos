@@ -1297,7 +1297,12 @@ window.beast = beast;
     } else {
       alert("O poder variará de acordo com a emoção da vítima.");
     }
-
+    window.resetHeroState = resetHeroState;
+window.showInterface = showInterface;
+window.closeInterface = closeInterface;
+window.updateDestransformTimerDisplay = updateDestransformTimerDisplay;
+window.hideDestransformTimer = hideDestransformTimer;
+window.updateAkumaDisplay = updateAkumaDisplay;
     // NOVO: Perguntar se deseja ativar o chat privado
     const activatePrivateChat = confirm("Psique: Deseja ativar um chat privado com o akumatizado?");
 
@@ -1381,7 +1386,7 @@ window.beast = beast;
       alert("Você não tem permissão para enviar mensagens para este chat Akumatizado.");
     }
   }
-
+    window.sendAkumaMessage = sendAkumaMessage;
   // NOVO: Psique concede poderes
   async function activatePsiqueGrantPower() {
     const heroName = 'Psique';
@@ -1804,8 +1809,6 @@ document.addEventListener('keypress', function (e) {
     }
   }
 });
-
-  
 </script>
 </body>
 </html>

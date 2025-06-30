@@ -17,7 +17,6 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      overflow: hidden; /* Evitar scroll do body se as interfaces forem muito grandes */
     }
 
     .container {
@@ -431,24 +430,23 @@
   const analytics = getAnalytics(app);
     
   // Firebase References
-  const globalChatRef = database.ref('globalChatMessages');
-  const powerUsedRef = database.ref('powerUsedState');
-  const heroTransformEndTimesRef = database.ref('heroTransformEndTimes');
-  const heroEvolvedRef = database.ref('heroEvolved');
-  const akumaStateRef = database.ref('akumaState');
-  const yellowferSecondChanceTimeRef = database.ref('yellowferSecondChanceTime');
-  const yellowferSecondChanceActiveRef = database.ref('yellowferSecondChanceActive');
-  const beastControlledElementsRef = database.ref('beastControlledElements');
-  const chatBlockedStateRef = database.ref('chatBlockedState');
-  const chatRedirectStateRef = database.ref('chatRedirectState');
-  const akumatizedEffectOnChatRef = database.ref('akumatizedEffectOnChat');
-  const litlegotCreatedItemRef = database.ref('litlegotCreatedItem');
-  const abraxSelfGrantedPowerRef = database.ref('abraxSelfGrantedPower');
-  const invertedChatStateRef = database.ref('invertedChatState');
-  const akumaChatRef = database.ref('akumaChatMessages'); // Separate reference for akuma chat
-  const abraxPuppetStringsStateRef = database.ref('abraxPuppetStringsState');
-  const psiqueGrantedPowerRef = database.ref('psiqueGrantedPower');
-
+  const globalChatRef = ref(database, 'globalChatMessages');
+  const powerUsedRef = ref(database, 'powerUsedState');
+  const heroTransformEndTimesRef = ref(database, 'heroTransformEndTimes');
+  const heroEvolvedRef = ref(database, 'heroEvolved');
+  const akumaStateRef = ref(database, 'akumaState');
+  const yellowferSecondChanceTimeRef = ref(database, 'yellowferSecondChanceTime');
+  const yellowferSecondChanceActiveRef = ref(database, 'yellowferSecondChanceActive');
+  const beastControlledElementsRef = ref(database, 'beastControlledElements');
+  const chatBlockedStateRef = ref(database, 'chatBlockedState');
+  const chatRedirectStateRef = ref(database, 'chatRedirectState');
+  const akumatizedEffectOnChatRef = ref(database, 'akumatizedEffectOnChat');
+  const litlegotCreatedItemRef = ref(database, 'litlegotCreatedItem');
+  const abraxSelfGrantedPowerRef = ref(database, 'abraxSelfGrantedPower');
+  const invertedChatStateRef = ref(database, 'invertedChatState');
+  const akumaChatRef = ref(database, 'akumaChatMessages');
+  const abraxPuppetStringsStateRef = ref(database, 'abraxPuppetStringsState');
+  const psiqueGrantedPowerRef = ref(database, 'psiqueGrantedPower');
 
   // Variables for Realtime Sync (will be updated by Firebase listeners)
   let powerUsedState = {};

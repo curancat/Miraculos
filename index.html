@@ -485,108 +485,105 @@
 
   // --- Firebase Data Listeners ---
   function setupFirebaseListeners() {
-    globalChatRef.on('value', (snapshot) => {
-      globalChatMessages = snapshot.val() || [];
-      renderGlobalChat();
-    });
+  onValue(globalChatRef, (snapshot) => {
+    globalChatMessages = snapshot.val() || [];
+    renderGlobalChat();
+  });
 
-    akumaChatRef.on('value', (snapshot) => {
-      akumaChatMessages = snapshot.val() || [];
-      renderAkumaChat();
-    });
+  onValue(akumaChatRef, (snapshot) => {
+    akumaChatMessages = snapshot.val() || [];
+    renderAkumaChat();
+  });
 
-    powerUsedRef.on('value', (snapshot) => {
-      powerUsedState = snapshot.val() || {};
-    });
+  onValue(powerUsedRef, (snapshot) => {
+    powerUsedState = snapshot.val() || {};
+  });
 
-    heroTransformEndTimesRef.on('value', (snapshot) => {
-      transformEndTimes = snapshot.val() || {};
-      // Re-evaluate timers if active hero is affected
-      if (currentActiveHero && transformEndTimes[currentActiveHero] && !evolvedHeroes[currentActiveHero]) {
-          updateDestransformTimerDisplay(currentActiveHero, transformEndTimes[currentActiveHero]);
-      } else if (currentActiveHero && evolvedHeroes[currentActiveHero]) {
-          hideDestransformTimer();
+  onValue(heroTransformEndTimesRef, (snapshot) => {
+    transformEndTimes = snapshot.val() || {};
+    if (currentActiveHero && transformEndTimes[currentActiveHero] && !evolvedHeroes[currentActiveHero]) {
+      updateDestransformTimerDisplay(currentActiveHero, transformEndTimes[currentActiveHero]);
+    } else if (currentActiveHero && evolvedHeroes[currentActiveHero]) {
+      hideDestransformTimer();
+    }
+  });
+
+  onValue(heroEvolvedRef, (snapshot) => {
+    evolvedHeroes = snapshot.val() || {};
+    if (currentActiveHero && evolvedHeroes[currentActiveHero]) {
+      hideDestransformTimer();
+      if (transformTimers[currentActiveHero]) {
+        clearTimeout(transformTimers[currentActiveHero]);
+        delete transformTimers[currentActiveHero];
+        remove(ref(database, `heroTransformEndTimes/${currentActiveHero}`));
       }
-    });
+    }
+  });
 
-    heroEvolvedRef.on('value', (snapshot) => {
-      evolvedHeroes = snapshot.val() || {};
-      // If the current hero just evolved, hide the timer
-      if (currentActiveHero && evolvedHeroes[currentActiveHero]) {
-          hideDestransformTimer();
-          if (transformTimers[currentActiveHero]) {
-              clearTimeout(transformTimers[currentActiveHero]);
-              delete transformTimers[currentActiveHero];
-              heroTransformEndTimesRef.child(currentActiveHero).remove(); // Remove from Firebase
-          }
-      }
-    });
+  onValue(akumaStateRef, (snapshot) => {
+    akumaState = snapshot.val() || { name: "", akumaChat: [], power: "", privateChatActive: false };
+    updateAkumaDisplay();
+    const akumaChatArea = document.querySelector('.akuma-chat-area');
+    if (akumaState.name && akumaState.privateChatActive && akumaChatArea) {
+      akumaChatArea.classList.add('akumatized-chat-effect');
+    } else if (akumaChatArea) {
+      akumaChatArea.classList.remove('akumatized-chat-effect');
+    }
+  });
 
-    akumaStateRef.on('value', (snapshot) => {
-      akumaState = snapshot.val() || { name: "", akumaChat: [], power: "", privateChatActive: false };
-      updateAkumaDisplay();
-      // Ensure the akuma chat area is visually updated based on akuma presence
-      const akumaChatArea = document.querySelector('.akuma-chat-area');
-      if (akumaState.name && akumaState.privateChatActive && akumaChatArea) { // Only show if private chat is active
-          akumaChatArea.classList.add('akumatized-chat-effect');
-      } else if (akumaChatArea) {
-          akumaChatArea.classList.remove('akumatized-chat-effect');
-      }
-    });
+  onValue(yellowferSecondChanceTimeRef, (snapshot) => {
+    yellowferSecondChanceTimestamp = snapshot.val();
+    if (yellowferSecondChanceTimestamp) {
+      document.getElementById('secondChanceStatus').innerText = `Segunda Chance Ativada! Ponto de retorno: ${new Date(yellowferSecondChanceTimestamp).toLocaleTimeString()}`;
+    } else {
+      document.getElementById('secondChanceStatus').innerText = '';
+    }
+  });
 
-    yellowferSecondChanceTimeRef.on('value', (snapshot) => {
-      yellowferSecondChanceTimestamp = snapshot.val();
-      if (yellowferSecondChanceTimestamp) {
-        document.getElementById('secondChanceStatus').innerText = `Segunda Chance Ativada! Ponto de retorno: ${new Date(yellowferSecondChanceTimestamp).toLocaleTimeString()}`;
-      } else {
-        document.getElementById('secondChanceStatus').innerText = '';
-      }
-    });
+  onValue(yellowferSecondChanceActiveRef, (snapshot) => {
+    yellowferSecondChanceActive = snapshot.val() || false;
+  });
 
-    yellowferSecondChanceActiveRef.on('value', (snapshot) => {
-      yellowferSecondChanceActive = snapshot.val() || false;
-    });
+  onValue(beastControlledElementsRef, (snapshot) => {
+    beastControlledElements = snapshot.val() || [];
+  });
 
-    beastControlledElementsRef.on('value', (snapshot) => {
-      beastControlledElements = snapshot.val() || [];
-    });
+  onValue(chatBlockedStateRef, (snapshot) => {
+    chatBlockedState = snapshot.val() || {};
+    renderGlobalChat();
+  });
 
-    chatBlockedStateRef.on('value', (snapshot) => {
-      chatBlockedState = snapshot.val() || {};
-      renderGlobalChat(); // Rerender to apply/remove blocked chat styles
-    });
+  onValue(chatRedirectStateRef, (snapshot) => {
+    chatRedirectState = snapshot.val() || { active: false, fromHero: '', toHero: '' };
+  });
 
-    chatRedirectStateRef.on('value', (snapshot) => {
-      chatRedirectState = snapshot.val() || { active: false, fromHero: '', toHero: '' };
-    });
+  onValue(akumatizedEffectOnChatRef, (snapshot) => {
+    akumatizedEffectOnChat = snapshot.val() || { active: false, name: '', distortedMessages: false };
+    renderGlobalChat();
+  });
 
-    akumatizedEffectOnChatRef.on('value', (snapshot) => {
-      akumatizedEffectOnChat = snapshot.val() || { active: false, name: '', distortedMessages: false };
-      renderGlobalChat(); // Rerender to apply/remove distortion/name changes
-    });
+  onValue(litlegotCreatedItemRef, (snapshot) => {
+    litlegotCreatedItem = snapshot.val();
+  });
 
-    litlegotCreatedItemRef.on('value', (snapshot) => {
-      litlegotCreatedItem = snapshot.val();
-    });
+  onValue(abraxSelfGrantedPowerRef, (snapshot) => {
+    abraxSelfGrantedPower = snapshot.val();
+  });
 
-    abraxSelfGrantedPowerRef.on('value', (snapshot) => {
-      abraxSelfGrantedPower = snapshot.val();
-    });
+  onValue(invertedChatStateRef, (snapshot) => {
+    invertedChatState = snapshot.val() || { active: false, targetHero: '' };
+    renderGlobalChat();
+  });
 
-    invertedChatStateRef.on('value', (snapshot) => {
-      invertedChatState = snapshot.val() || { active: false, targetHero: '' };
-      renderGlobalChat(); // Rerender to apply/remove inversion effect
-    });
+  onValue(abraxPuppetStringsStateRef, (snapshot) => {
+    abraxPuppetStringsState = snapshot.val() || { active: false, targetHero: '', messagesLeft: 0 };
+  });
 
-    abraxPuppetStringsStateRef.on('value', (snapshot) => {
-        abraxPuppetStringsState = snapshot.val() || { active: false, targetHero: '', messagesLeft: 0 };
-    });
-
-    psiqueGrantedPowerRef.on('value', (snapshot) => {
-        psiqueGrantedPower = snapshot.val() || { active: false, targetHero: '', grantedPowerType: '', usesRemaining: 0, granter: '' };
-    });
+  onValue(psiqueGrantedPowerRef, (snapshot) => {
+    psiqueGrantedPower = snapshot.val() || { active: false, targetHero: '', grantedPowerType: '', usesRemaining: 0, granter: '' };
+  });
   }
-
+    
   // --- Hero transformation functions ---
   function litlegot() {
     const transforma = prompt("Frase de transformação:");

@@ -1242,7 +1242,11 @@ window.beast = beast;
     }
 
     alert(oracleOutput);
-    await globalChatRef.push({ sender: 'Sistema', message: `Abrax usou Oráculo para ver o fluxo do tempo!`, timestamp: Date.now() });
+    await set(push(globalChatRef), {
+  sender: 'Sistema',
+  message: `Abrax usou Oráculo para ver o fluxo do tempo!`,
+  timestamp: Date.now()
+});
     await abraxSelfGrantedPowerRef.set(null); // Consome o poder
   }
 
@@ -1256,8 +1260,11 @@ window.beast = beast;
     }
 
     alert(`Abrax: Você ativou Cordas de Fantoche em ${trimmedTargetHero}! Suas próximas 3 mensagens serão enviadas como se fossem dele(a).`);
-    await globalChatRef.push({ sender: 'Sistema', message: `Abrax ativou "Cordas de Fantoche" em ${trimmedTargetHero}!`, timestamp: Date.now() });
-
+    await set(push(globalChatRef), {
+  sender: 'Sistema',
+  message: `Abrax usou Cordas de Fantoche em ${targetHero}.`,
+  timestamp: Date.now()
+});
     await abraxPuppetStringsStateRef.set({ active: true, targetHero: trimmedTargetHero, messagesLeft: 3 });
     await abraxSelfGrantedPowerRef.set(null); // Consome o poder
   }
@@ -1631,8 +1638,12 @@ window.updateAkumaDisplay = updateAkumaDisplay;
       setTimeout(async () => {
           await chatBlockedStateRef.child(trimmedTargetHero).set(false);
           alert(`${trimmedTargetHero}'s chat is now UNBLOCKED.`);
-          await globalChatRef.push({ sender: 'Sistema', message: `${trimmedTargetHero}'s chat has been UNBLOCKED!`, timestamp: Date.now() });
-      }, 30000);
+        
+          await set(push(globalChatRef), {
+  sender: 'Sistema',
+  message: `Beast usou Silêncio em ${targetHero}.`,
+  timestamp: Date.now()
+});
   }
 
   // --- Evolução do Miraculous ---

@@ -1725,63 +1725,81 @@
   }
 
   // --- Inicialização ao carregar a página ---
-  window.onload = function() {
-    setupFirebaseListeners(); // Start listening to Firebase data
+  
+window.onload = async function () {
+  setupFirebaseListeners(); // Start listening to Firebase data
 
-    // Check for existing transform timers and restart if necessary
-    heroTransformEndTimesRef.once('value').then(snapshot => {
-        const storedEndTimes = snapshot.val() || {};
-        for (const hero in storedEndTimes) {
-            if (storedEndTimes.hasOwnProperty(hero) && !evolvedHeroes[hero]) {
-                const endTime = storedEndTimes[hero];
-                const timeLeft = endTime - Date.now();
-                if (timeLeft > 0) {
-                    if (transformTimers[hero]) clearTimeout(transformTimers[hero]);
-                    transformTimers[hero] = setTimeout(() => {
-                        alert(`${hero} destransformou!`);
-                        resetHeroState(hero);
-                        hideDestransformTimer();
-                        if (currentActiveHero === hero) {
-                            closeInterface(`${hero.toLowerCase()}Interface`);
-                        }
-                    }, timeLeft);
-                } else {
-                    resetHeroState(hero); // Time already passed
-                }
-            }
-        }
-        // If a hero was active before refresh and has a timer, display it
-        const lastActiveHeroOnLoad = localStorage.getItem('lastActiveHero');
-        if (lastActiveHeroOnLoad && storedEndTimes[lastActiveHeroOnLoad] && !evolvedHeroes[lastActiveHeroOnLoad] && !(psiqueGrantedPower.active && psiqueGrantedPower.targetHero === lastActiveHeroOnLoad && psiqueGrantedPower.grantedPowerType === 'poder_ilimitado')) {
-            currentActiveHero = lastActiveHeroOnLoad; // Set current active hero for timer display
-            updateDestransformTimerDisplay(lastActiveHeroOnLoad, storedEndTimes[lastActiveHeroOnLoad]);
-        }
-    });
+  // Check for existing transform timers and restart if necessary
+  const snapshot = await get(heroTransformEndTimesRef);
+  const storedEndTimes = snapshot.val() || {};
 
-    renderGlobalChat();
-    updateAkumaDisplay();
-    renderAkumaChat();
-  };
+  for (const hero in storedEndTimes) {
+    if (storedEndTimes.hasOwnProperty(hero) && !evolvedHeroes[hero]) {
+      const endTime = storedEndTimes[hero];
+      const timeLeft = endTime - Date.now();
 
-  document.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      const activeInterface = document.querySelector('.hero-interface[style*="display: flex"]');
-      if (activeInterface) {
-        const heroId = activeInterface.id.replace('Interface', '');
-        const senderName = heroId.charAt(0).toUpperCase() + heroId.slice(1);
-        const chatInput = document.getElementById(`chatInput_${heroId}`);
-        const akumaChatInput = document.getElementById('akumaChatInput');
-
-        if (chatInput && document.activeElement === chatInput) {
-          sendMessage(senderName, heroId);
-        } else if (heroId === 'psique' && akumaChatInput && document.activeElement === akumaChatInput) {
-          sendAkumaMessage(senderName);
-        } else if (akumaState.privateChatActive && akumaState.name === senderName && akumaChatInput && document.activeElement === akumaChatInput) {
-             sendAkumaMessage(senderName); // Akumatized person sending to akuma chat
-        }
+      if (timeLeft > 0) {
+        if (transformTimers[hero]) clearTimeout(transformTimers[hero]);
+        transformTimers[hero] = setTimeout(() => {
+          alert(`${hero} destransformou!`);
+          resetHeroState(hero);
+          hideDestransformTimer();
+          if (currentActiveHero === hero) {
+            closeInterface(`${hero.toLowerCase()}Interface`);
+          }
+        }, timeLeft);
+      } else {
+        resetHeroState(hero); // Time already passed
       }
     }
-  });
+  }
+
+  // If a hero was active before refresh and has a timer, display it
+  const lastActiveHeroOnLoad = localStorage.getItem('lastActiveHero');
+  if (
+    lastActiveHeroOnLoad &&
+    storedEndTimes[lastActiveHeroOnLoad] &&
+    !evolvedHeroes[lastActiveHeroOnLoad] &&
+    !(psiqueGrantedPower.active &&
+      psiqueGrantedPower.targetHero === lastActiveHeroOnLoad &&
+      psiqueGrantedPower.grantedPowerType === 'poder_ilimitado')
+  ) {
+    currentActiveHero = lastActiveHeroOnLoad;
+    updateDestransformTimerDisplay(lastActiveHeroOnLoad, storedEndTimes[lastActiveHeroOnLoad]);
+  }
+
+  renderGlobalChat();
+  updateAkumaDisplay();
+  renderAkumaChat();
+};
+
+// Escutar ENTER para enviar mensagens no chat
+document.addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    const activeInterface = document.querySelector('.hero-interface[style*="display: flex"]');
+    if (activeInterface) {
+      const heroId = activeInterface.id.replace('Interface', '');
+      const senderName = heroId.charAt(0).toUpperCase() + heroId.slice(1);
+      const chatInput = document.getElementById(`chatInput_${heroId}`);
+      const akumaChatInput = document.getElementById('akumaChatInput');
+
+      if (chatInput && document.activeElement === chatInput) {
+        sendMessage(senderName, heroId);
+      } else if (heroId === 'psique' && akumaChatInput && document.activeElement === akumaChatInput) {
+        sendAkumaMessage(senderName);
+      } else if (
+        akumaState.privateChatActive &&
+        akumaState.name === senderName &&
+        akumaChatInput &&
+        document.activeElement === akumaChatInput
+      ) {
+        sendAkumaMessage(senderName); // Akumatized person sending to akuma chat
+      }
+    }
+  }
+});
+
+  
 </script>
 </body>
 </html>

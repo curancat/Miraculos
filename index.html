@@ -1806,6 +1806,30 @@ window.beast = beast;
       await push(globalChatRef, { sender: 'Sistema', message: `O Miraculous de ${heroName} EVOLUIU! O limite de tempo foi abolido!`, timestamp: Date.now() });
     }
   }
+    // --- Funções de Chat e Controle de Interface ---
+window.sendMessage = sendMessage;
+window.closeInterface = closeInterface;
+window.showPowerInterface = showPowerInterface; // Esta função está definida e pode ser útil para navegar para as interfaces de poder
+window.closePowerInterface = closePowerInterface;
+
+// --- Funções de Modo Akuma ---
+window.sendAkumaMessage = sendAkumaMessage;
+window.promptAkumaName = promptAkumaName;
+window.desakumatizar = desakumatizar;
+
+// --- Funções de Ativação de Poderes (todas as que são chamadas via onclick) ---
+window.activateGenesis = activateGenesis;         // Poder do Litlegot
+window.activateSublimacao = activateSublimacao;   // Poder do Abrax
+window.activateSecondChance = activateSecondChance; // Poder do Yellowfer
+window.activateViajar = activateViajar;           // Poder do Lindenbergue
+window.activateDragao = activateDragao;           // Poder do Beast
+
+// Observação sobre Psique e Abrax:
+// Para Psique, a ativação do "modo Akuma" é feita pelas funções promptAkumaName e desakumatizar.
+// Os "poderes" listados em ABRAX_PREDEFINED_POWERS (como 'inversao', 'oraculo', etc.)
+// são comandos de texto que você processa dentro da função `sendMessage` do Abrax,
+// e não são funções JavaScript separadas com `onclick` no HTML.
+// Portanto, não há funções `activateInversao` ou similares para adicionar aqui.
   </script>
 </body>
 </html>

@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <title>Caixa de Miraculos</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap'); /* Manter para o h1 se desejar */
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
     body {
-      font-family: 'Rockwell', serif; /* Usando Rockwell como em sua última versão */
+      font-family: 'Rockwell', serif;
       margin: 0;
       padding: 0;
-      background: url('https://i.imgur.com/your-background-image.jpg') no-repeat center center fixed; /* Replace with your desired image URL */
+      background: url('https://i.imgur.com/your-background-image.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
       display: flex;
@@ -27,7 +27,7 @@
       width: 90%;
       max-width: 600px;
       text-align: center;
-      position: relative; /* Para posicionar interfaces de poder sobre ele */
+      position: relative;
     }
 
     h1 {
@@ -35,7 +35,7 @@
       color: #00ffff;
       text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
       margin-bottom: 20px;
-      font-family: 'Pacifico', cursive; /* Mantendo Pacifico para o título como estava */
+      font-family: 'Pacifico', cursive;
     }
 
     .hero-buttons {
@@ -54,7 +54,7 @@
       border: none;
       padding: 15px 30px;
       font-size: 1.2em;
-      font-family: 'Rockwell', serif; /* Usando Rockwell para os botões */
+      font-family: 'Rockwell', serif;
       border-radius: 30px;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -253,6 +253,19 @@
       z-index: 100;
       display: none; /* Oculto por padrão */
     }
+
+    /* Estilos adicionais para efeitos de chat */
+    .abrax-inverted-chat-effect {
+      transform: scaleX(-1);
+      direction: rtl;
+      unicode-bidi: bidi-override;
+    }
+
+    .akumatized-message-style {
+      color: #ff0000;
+      font-style: italic;
+      text-decoration: wavy underline;
+    }
   </style>
 </head>
 <body>
@@ -285,9 +298,10 @@
 
     <div id="destransformTimer" class="timer-display"></div>
 
+    <div id="globalChatDisplay" class="chat-display" style="display: none; margin-top: 20px;"></div>
+
     <div id="litlegotInterface" class="hero-interface">
       <h2>Litlegot 🖌️</h2>
-      <div class="chat-display" id="globalChatDisplay"></div>
       <div class="chat-input-area">
         <input type="text" id="chatInput_litlegot" placeholder="Digite sua mensagem ou comando de poder (/genesis)...">
         <button onclick="sendMessage('Litlegot', 'litlegot')">Enviar</button>
@@ -297,7 +311,6 @@
 
     <div id="abraxInterface" class="hero-interface">
       <h2>Abrax 🪶</h2>
-      <div class="chat-display" id="globalChatDisplay"></div>
       <div class="chat-input-area">
         <input type="text" id="chatInput_abrax" placeholder="Digite sua mensagem ou comando de poder (/sublimacao)...">
         <button onclick="sendMessage('Abrax', 'abrax')">Enviar</button>
@@ -307,7 +320,6 @@
 
     <div id="psiqueInterface" class="hero-interface">
       <h2>Psique 🦋</h2>
-      <div class="chat-display" id="globalChatDisplay"></div>
       <div class="akuma-chat-area">
         <h3>Comunicação com Akumatizado: <span id="akumatizedNameDisplay">Ninguém</span></h3>
         <div class="chat-display" id="akumaChatDisplay"></div>
@@ -329,7 +341,6 @@
 
     <div id="yellowferInterface" class="hero-interface">
       <h2>Yellowfer ⏳</h2>
-      <div class="chat-display" id="globalChatDisplay"></div>
       <div class="chat-input-area">
         <input type="text" id="chatInput_yellowfer" placeholder="Digite sua mensagem ou comando de poder (/segundachance)...">
         <button onclick="sendMessage('Yellowfer', 'yellowfer')">Enviar</button>
@@ -339,7 +350,6 @@
 
     <div id="lindenbergueInterface" class="hero-interface">
       <h2>Lindenbergue 🪞</h2>
-      <div class="chat-display" id="globalChatDisplay"></div>
       <div class="chat-input-area">
         <input type="text" id="chatInput_lindenbergue" placeholder="Digite sua mensagem ou comando de poder (/viajar)...">
         <button onclick="sendMessage('Lindenbergue', 'lindenbergue')">Enviar</button>
@@ -349,7 +359,6 @@
 
     <div id="beastInterface" class="hero-interface">
       <h2>Beast ⚔️</h2>
-      <div class="chat-display" id="globalChatDisplay"></div>
       <div class="chat-input-area">
         <input type="text" id="chatInput_beast" placeholder="Digite sua mensagem ou comando de poder (/dragao)...">
         <button onclick="sendMessage('Beast', 'beast')">Enviar</button>
@@ -401,20 +410,13 @@
         <p id="dragonStatus" class="power-info"></p>
         <button class="close-button" onclick="closePowerInterface('beastDragaoInterface')">Voltar ao Chat</button>
     </div>
-
-    </div>
-  <script type="module">
+  </div> <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-  import { getDatabase, ref, onValue, push, set, update, remove } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
-  import { get } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+  import { getDatabase, ref, onValue, push, set, update, remove, get } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
     
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
   // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
     apiKey: "AIzaSyBONdrMeMEhigQ1SEhJMrkEeArf5xfF8YA",
     authDomain: "miraculos-276b1.firebaseapp.com",
@@ -430,7 +432,7 @@
   const database = getDatabase(app);
   const analytics = getAnalytics(app);
     
-  // Firebase References
+  // Firebase References (updated to use ref() for v9+)
   const globalChatRef = ref(database, 'globalChatMessages');
   const powerUsedRef = ref(database, 'powerUsedState');
   const heroTransformEndTimesRef = ref(database, 'heroTransformEndTimes');
@@ -480,111 +482,168 @@
     'escudo psiquico', 'projecao astral', 'teletransporte menor', 'ilusao', 'catalise'
   ];
   const PSIQUE_CONCEDE_POWERS = [
-    'poder_ilimitado', 'criar_item', 'reverter_tempo', 'silenciar'
+    'poder_ilimitado', 'criar_item', 'reverter_tempo', 'silenciar_beast' // Renamed 'silenciar' to avoid conflict and specify target
   ];
 
 
   // --- Firebase Data Listeners ---
   function setupFirebaseListeners() {
-  onValue(globalChatRef, (snapshot) => {
-    globalChatMessages = snapshot.val() || [];
-    renderGlobalChat();
-  });
+    onValue(globalChatRef, (snapshot) => {
+      // Firebase stores lists as objects with unique keys, convert to array for easier processing
+      globalChatMessages = [];
+      snapshot.forEach((childSnapshot) => {
+        globalChatMessages.push({ key: childSnapshot.key, ...childSnapshot.val() });
+      });
+      renderGlobalChat();
+    });
 
-  onValue(akumaChatRef, (snapshot) => {
-    akumaChatMessages = snapshot.val() || [];
+    onValue(akumaChatRef, (snapshot) => {
+      akumaChatMessages = [];
+      snapshot.forEach((childSnapshot) => {
+        akumaChatMessages.push({ key: childSnapshot.key, ...childSnapshot.val() });
+      });
+      renderAkumaChat();
+    });
+
+    onValue(powerUsedRef, (snapshot) => {
+      powerUsedState = snapshot.val() || {};
+    });
+
+    onValue(heroTransformEndTimesRef, (snapshot) => {
+      transformEndTimes = snapshot.val() || {};
+      if (currentActiveHero && transformEndTimes[currentActiveHero] && !evolvedHeroes[currentActiveHero]) {
+        updateDestransformTimerDisplay(currentActiveHero, transformEndTimes[currentActiveHero]);
+      } else if (currentActiveHero && evolvedHeroes[currentActiveHero]) {
+        hideDestransformTimer();
+      }
+    });
+
+    onValue(heroEvolvedRef, (snapshot) => {
+      evolvedHeroes = snapshot.val() || {};
+      if (currentActiveHero && evolvedHeroes[currentActiveHero]) {
+        hideDestransformTimer();
+        if (transformTimers[currentActiveHero]) {
+          clearTimeout(transformTimers[currentActiveHero]);
+          delete transformTimers[currentActiveHero];
+          remove(ref(database, `heroTransformEndTimes/${currentActiveHero}`));
+        }
+      }
+    });
+
+    onValue(akumaStateRef, (snapshot) => {
+      akumaState = snapshot.val() || { name: "", akumaChat: [], power: "", privateChatActive: false };
+      updateAkumaDisplay();
+      const akumaChatArea = document.querySelector('.akuma-chat-area');
+      if (akumaState.name && akumaState.privateChatActive && akumaChatArea) {
+        akumaChatArea.classList.add('akumatized-chat-effect');
+      } else if (akumaChatArea) {
+        akumaChatArea.classList.remove('akumatized-chat-effect');
+      }
+    });
+
+    onValue(yellowferSecondChanceTimeRef, (snapshot) => {
+      yellowferSecondChanceTimestamp = snapshot.val();
+  if (yellowferSecondChanceTimestamp) {
+        document.getElementById('secondChanceStatus').innerText = `Segunda Chance Ativada! Ponto de retorno: ${new Date(yellowferSecondChanceTimestamp).toLocaleTimeString()}`;
+      } else {
+        document.getElementById('secondChanceStatus').innerText = '';
+      }
+    });
+
+    onValue(yellowferSecondChanceActiveRef, (snapshot) => {
+      yellowferSecondChanceActive = snapshot.val() || false;
+    });
+
+    onValue(beastControlledElementsRef, (snapshot) => {
+      beastControlledElements = snapshot.val() || [];
+    });
+
+    onValue(chatBlockedStateRef, (snapshot) => {
+      chatBlockedState = snapshot.val() || {};
+      renderGlobalChat();
+    });
+
+    onValue(chatRedirectStateRef, (snapshot) => {
+      chatRedirectState = snapshot.val() || { active: false, fromHero: '', toHero: '' };
+    });
+
+    onValue(akumatizedEffectOnChatRef, (snapshot) => {
+      akumatizedEffectOnChat = snapshot.val() || { active: false, name: '', distortedMessages: false };
+      renderGlobalChat();
+    });
+
+    onValue(litlegotCreatedItemRef, (snapshot) => {
+      litlegotCreatedItem = snapshot.val();
+      const genesisOutput = document.getElementById('genesisOutput');
+      if (genesisOutput) {
+        genesisOutput.innerText = litlegotCreatedItem ? `Item criado: "${litlegotCreatedItem}"` : '';
+      }
+    });
+
+    onValue(abraxSelfGrantedPowerRef, (snapshot) => {
+      abraxSelfGrantedPower = snapshot.val();
+      const sublimacaoOutput = document.getElementById('sublimacaoOutput');
+      if (sublimacaoOutput) {
+        sublimacaoOutput.innerText = abraxSelfGrantedPower ? `Poder concedido: "${abraxSelfGrantedPower}"` : '';
+      }
+    });
+
+    onValue(invertedChatStateRef, (snapshot) => {
+      invertedChatState = snapshot.val() || { active: false, targetHero: '' };
+      renderGlobalChat();
+    });
+
+    onValue(abraxPuppetStringsStateRef, (snapshot) => {
+      abraxPuppetStringsState = snapshot.val() || { active: false, targetHero: '', messagesLeft: 0 };
+    });
+
+    onValue(psiqueGrantedPowerRef, (snapshot) => {
+      psiqueGrantedPower = snapshot.val() || { active: false, targetHero: '', grantedPowerType: '', usesRemaining: 0, granter: '' };
+    });
+  }
+    
+  // Call listeners on load
+  setupFirebaseListeners();
+
+  // Load last active hero state from localStorage if available
+  document.addEventListener('DOMContentLoaded', () => {
+    const lastActiveHeroOnLoad = localStorage.getItem('lastActiveHero');
+    const storedEndTimes = JSON.parse(localStorage.getItem('heroTransformEndTimes') || '{}'); // Retrieve stored end times
+
+    // Only activate if there's a last active hero and no power_ilimitado
+    if (
+      lastActiveHeroOnLoad &&
+      storedEndTimes[lastActiveHeroOnLoad] &&
+      !(psiqueGrantedPower.active &&
+        psiqueGrantedPower.targetHero === lastActiveHeroOnLoad &&
+        psiqueGrantedPower.grantedPowerType === 'poder_ilimitado')
+    ) {
+      currentActiveHero = lastActiveHeroOnLoad;
+      // Re-initialize the timer display based on stored end time
+      updateDestransformTimerDisplay(lastActiveHeroOnLoad, storedEndTimes[lastActiveHeroOnLoad]);
+      // Show the interface if a hero was active, otherwise hide the timer
+      const lastInterfaceId = `${lastActiveHeroOnLoad.toLowerCase()}Interface`;
+      const interfaceElement = document.getElementById(lastInterfaceId);
+      if (interfaceElement) {
+        document.querySelectorAll('.hero-interface, .power-interface').forEach(el => el.style.display = 'none');
+        document.getElementById('heroButtons').style.display = 'none';
+        interfaceElement.style.display = 'flex';
+      } else {
+         hideDestransformTimer();
+         document.getElementById('heroButtons').style.display = 'block';
+      }
+    } else {
+       // If no active hero or unlimited power, ensure buttons are visible and timer is hidden
+       document.getElementById('heroButtons').style.display = 'block';
+       hideDestransformTimer();
+    }
+
+    renderGlobalChat();
+    updateAkumaDisplay();
     renderAkumaChat();
   });
 
-  onValue(powerUsedRef, (snapshot) => {
-    powerUsedState = snapshot.val() || {};
-  });
 
-  onValue(heroTransformEndTimesRef, (snapshot) => {
-    transformEndTimes = snapshot.val() || {};
-    if (currentActiveHero && transformEndTimes[currentActiveHero] && !evolvedHeroes[currentActiveHero]) {
-      updateDestransformTimerDisplay(currentActiveHero, transformEndTimes[currentActiveHero]);
-    } else if (currentActiveHero && evolvedHeroes[currentActiveHero]) {
-      hideDestransformTimer();
-    }
-  });
-
-  onValue(heroEvolvedRef, (snapshot) => {
-    evolvedHeroes = snapshot.val() || {};
-    if (currentActiveHero && evolvedHeroes[currentActiveHero]) {
-      hideDestransformTimer();
-      if (transformTimers[currentActiveHero]) {
-        clearTimeout(transformTimers[currentActiveHero]);
-        delete transformTimers[currentActiveHero];
-        remove(ref(database, `heroTransformEndTimes/${currentActiveHero}`));
-      }
-    }
-  });
-
-  onValue(akumaStateRef, (snapshot) => {
-    akumaState = snapshot.val() || { name: "", akumaChat: [], power: "", privateChatActive: false };
-    updateAkumaDisplay();
-    const akumaChatArea = document.querySelector('.akuma-chat-area');
-    if (akumaState.name && akumaState.privateChatActive && akumaChatArea) {
-      akumaChatArea.classList.add('akumatized-chat-effect');
-    } else if (akumaChatArea) {
-      akumaChatArea.classList.remove('akumatized-chat-effect');
-    }
-  });
-
-  onValue(yellowferSecondChanceTimeRef, (snapshot) => {
-    yellowferSecondChanceTimestamp = snapshot.val();
-    if (yellowferSecondChanceTimestamp) {
-      document.getElementById('secondChanceStatus').innerText = `Segunda Chance Ativada! Ponto de retorno: ${new Date(yellowferSecondChanceTimestamp).toLocaleTimeString()}`;
-    } else {
-      document.getElementById('secondChanceStatus').innerText = '';
-    }
-  });
-
-  onValue(yellowferSecondChanceActiveRef, (snapshot) => {
-    yellowferSecondChanceActive = snapshot.val() || false;
-  });
-
-  onValue(beastControlledElementsRef, (snapshot) => {
-    beastControlledElements = snapshot.val() || [];
-  });
-
-  onValue(chatBlockedStateRef, (snapshot) => {
-    chatBlockedState = snapshot.val() || {};
-    renderGlobalChat();
-  });
-
-  onValue(chatRedirectStateRef, (snapshot) => {
-    chatRedirectState = snapshot.val() || { active: false, fromHero: '', toHero: '' };
-  });
-
-  onValue(akumatizedEffectOnChatRef, (snapshot) => {
-    akumatizedEffectOnChat = snapshot.val() || { active: false, name: '', distortedMessages: false };
-    renderGlobalChat();
-  });
-
-  onValue(litlegotCreatedItemRef, (snapshot) => {
-    litlegotCreatedItem = snapshot.val();
-  });
-
-  onValue(abraxSelfGrantedPowerRef, (snapshot) => {
-    abraxSelfGrantedPower = snapshot.val();
-  });
-
-  onValue(invertedChatStateRef, (snapshot) => {
-    invertedChatState = snapshot.val() || { active: false, targetHero: '' };
-    renderGlobalChat();
-  });
-
-  onValue(abraxPuppetStringsStateRef, (snapshot) => {
-    abraxPuppetStringsState = snapshot.val() || { active: false, targetHero: '', messagesLeft: 0 };
-  });
-
-  onValue(psiqueGrantedPowerRef, (snapshot) => {
-    psiqueGrantedPower = snapshot.val() || { active: false, targetHero: '', grantedPowerType: '', usesRemaining: 0, granter: '' };
-  });
-  }
-    
   // --- Hero transformation functions ---
   function litlegot() {
     const transforma = prompt("Frase de transformação:");
@@ -657,6 +716,7 @@
       alert('Ordem Nula!');
     }
   }
+
 // Torna as funções globais para o HTML conseguir acessar
 window.litlegot = litlegot;
 window.abrax = abrax;
@@ -667,47 +727,56 @@ window.beast = beast;
   // --- Funções de Renderização de Chat ---
 
   function renderGlobalChat() {
-    const chatDisplays = document.querySelectorAll('#globalChatDisplay');
-    chatDisplays.forEach(chatDisplay => {
-      chatDisplay.innerHTML = '';
-      globalChatMessages.forEach(msg => {
-        const newMessageDiv = document.createElement('div');
-        newMessageDiv.classList.add('chat-message');
+    const chatDisplay = document.getElementById('globalChatDisplay');
+    if (!chatDisplay) return; // Ensure element exists
 
-        if (msg.sender === 'Sistema') {
-          newMessageDiv.classList.add('system-message');
-        }
+    // Show the global chat display only if an interface is active
+    if (currentActiveHero) {
+      chatDisplay.style.display = 'block';
+    } else {
+      chatDisplay.style.display = 'none';
+    }
 
-        // Apply Abrax inversion visual effect ONLY if the message original sender is the target AND Abrax power is active
-        if (invertedChatState.active && invertedChatState.targetHero === msg.originalSender) {
-            newMessageDiv.classList.add('abrax-inverted-chat-effect');
-            // CSS for .abrax-inverted-chat-effect could be: transform: scaleX(-1); direction: rtl; unicode-bidi: bidi-override;
-        }
+    chatDisplay.innerHTML = '';
+    globalChatMessages.forEach(msg => {
+      const newMessageDiv = document.createElement('div');
+      newMessageDiv.classList.add('chat-message');
 
-        // Apply Akumatized message style (for the original akumatized sender)
-        if (akumatizedEffectOnChat.active && akumatizedEffectOnChat.name === msg.originalSender) {
-            newMessageDiv.classList.add('akumatized-message-style');
-            // CSS for .akumatized-message-style could be: color: #ff0000; font-style: italic; text-decoration: wavy underline;
-        }
+      if (msg.sender === 'Sistema') {
+        newMessageDiv.classList.add('system-message');
+      }
 
-        newMessageDiv.innerHTML = `<strong>${msg.sender}:</strong> ${msg.message}`;
-        chatDisplay.appendChild(newMessageDiv);
-      });
-      chatDisplay.scrollTop = chatDisplay.scrollHeight;
+      // Apply Abrax inversion visual effect ONLY if the message original sender is the target AND Abrax power is active
+      if (invertedChatState.active && invertedChatState.targetHero === msg.originalSender) {
+          newMessageDiv.classList.add('abrax-inverted-chat-effect');
+      }
+
+      // Apply Akumatized message style (for the original akumatized sender)
+      if (akumatizedEffectOnChat.active && akumatizedEffectOnChat.name === msg.originalSender) {
+          newMessageDiv.classList.add('akumatized-message-style');
+      }
+
+      newMessageDiv.innerHTML = `<strong>${msg.sender}:</strong> ${msg.message}`;
+      chatDisplay.appendChild(newMessageDiv);
     });
+    chatDisplay.scrollTop = chatDisplay.scrollHeight;
   }
 
   function renderAkumaChat() {
     const akumaChatDisplay = document.getElementById('akumaChatDisplay');
+    const akumaChatArea = document.querySelector('.akuma-chat-area');
+
     // Hide akuma chat if not active
     if (!akumaState.name || !akumaState.privateChatActive) {
-        akumaChatDisplay.style.display = 'none';
-        document.querySelector('.akuma-chat-area').style.display = 'none';
+        if (akumaChatDisplay) akumaChatDisplay.style.display = 'none';
+        if (akumaChatArea) akumaChatArea.style.display = 'none';
         return;
     } else {
-        akumaChatDisplay.style.display = 'block';
-        document.querySelector('.akuma-chat-area').style.display = 'flex'; // Ensure flex for its container
+        if (akumaChatDisplay) akumaChatDisplay.style.display = 'block';
+        if (akumaChatArea) akumaChatArea.style.display = 'flex'; // Ensure flex for its container
     }
+
+    if (!akumaChatDisplay) return; // Ensure element exists after visibility check
 
     akumaChatDisplay.innerHTML = '';
     akumaChatMessages.forEach(msg => {
@@ -735,7 +804,13 @@ window.beast = beast;
 
     console.log(`Iniciando timer de 5 minutos para ${heroName}.`);
     const endTime = Date.now() + FIVE_MINUTES_MS;
-    heroTransformEndTimesRef.child(heroName).set(endTime); // Save to Firebase
+    set(ref(database, `heroTransformEndTimes/${heroName}`), endTime); // Save to Firebase
+
+    // Also store in localStorage for persistence across refreshes
+    const storedEndTimes = JSON.parse(localStorage.getItem('heroTransformEndTimes') || '{}');
+    storedEndTimes[heroName] = endTime;
+    localStorage.setItem('heroTransformEndTimes', JSON.stringify(storedEndTimes));
+
 
     if (transformTimers[heroName]) {
       clearTimeout(transformTimers[heroName]);
@@ -749,12 +824,26 @@ window.beast = beast;
       resetHeroState(heroName);
       hideDestransformTimer();
       closeInterface(`${heroName.toLowerCase()}Interface`);
+      // Remove from localStorage upon destransformation
+      const storedEndTimes = JSON.parse(localStorage.getItem('heroTransformEndTimes') || '{}');
+      delete storedEndTimes[heroName];
+      localStorage.setItem('heroTransformEndTimes', JSON.stringify(storedEndTimes));
     }, FIVE_MINUTES_MS);
   }
 
   function updateDestransformTimerDisplay(heroName, endTime) {
     const timerDisplay = document.getElementById('destransformTimer');
     if (!timerDisplay) return; // Ensure element exists
+
+    // Check if the hero is evolved or has unlimited power from Psique
+    if (evolvedHeroes[heroName] || (psiqueGrantedPower.active && psiqueGrantedPower.targetHero === heroName && psiqueGrantedPower.grantedPowerType === 'poder_ilimitado')) {
+      timerDisplay.style.display = 'none'; // Hide timer if evolved or has unlimited power
+      if (destransformIntervalId) {
+        clearInterval(destransformIntervalId);
+        destransformIntervalId = null;
+      }
+      return;
+    }
 
     timerDisplay.style.display = 'block';
 
@@ -789,62 +878,68 @@ window.beast = beast;
   }
 
   async function resetHeroState(heroName) {
-    await powerUsedRef.child(heroName).set(false);
+    await set(ref(database, `powerUsedState/${heroName}`), false);
 
     if (transformTimers[heroName]) {
       clearTimeout(transformTimers[heroName]);
       delete transformTimers[heroName];
     }
-    await heroTransformEndTimesRef.child(heroName).remove(); // Remove from Firebase
+    await remove(ref(database, `heroTransformEndTimes/${heroName}`)); // Remove from Firebase
+
+    // Remove from localStorage
+    const storedEndTimes = JSON.parse(localStorage.getItem('heroTransformEndTimes') || '{}');
+    delete storedEndTimes[heroName];
+    localStorage.setItem('heroTransformEndTimes', JSON.stringify(storedEndTimes));
 
     // Reset specific power states in Firebase
     if (heroName === 'Litlegot') {
-      await litlegotCreatedItemRef.set(null);
+      await set(litlegotCreatedItemRef, null);
     }
     if (heroName === 'Abrax') {
       if (abraxPuppetStringsState.active && abraxPuppetStringsState.targetHero) {
           alert(`As cordas de fantoche de ${abraxPuppetStringsState.targetHero} foram desativadas pois Abrax destransformou.`);
-          await globalChatRef.push({ sender: 'Sistema', message: `As cordas de fantoche de ${abraxPuppetStringsState.targetHero} foram desativadas devido à destransformação de Abrax!`, timestamp: Date.now() });
-          await abraxPuppetStringsStateRef.set({ active: false, targetHero: '', messagesLeft: 0 });
+          await push(globalChatRef, { sender: 'Sistema', message: `As cordas de fantoche de ${abraxPuppetStringsState.targetHero} foram desativadas devido à destransformação de Abrax!`, timestamp: Date.now() });
+          await set(abraxPuppetStringsStateRef, { active: false, targetHero: '', messagesLeft: 0 });
       }
       if (invertedChatState.active && invertedChatState.targetHero) {
           alert(`${invertedChatState.targetHero}'s chat is no longer inverted as Abrax destransformed.`);
-          await globalChatRef.push({ sender: 'Sistema', message: `${invertedChatState.targetHero}'s chat is no longer INVERTED due to Abrax's destransformation!`, timestamp: Date.now() });
-          await invertedChatStateRef.set({ active: false, targetHero: '' });
+          await push(globalChatRef, { sender: 'Sistema', message: `${invertedChatState.targetHero}'s chat is no longer INVERTED due to Abrax's destransformation!`, timestamp: Date.now() });
+          await set(invertedChatStateRef, { active: false, targetHero: '' });
       }
-      await abraxSelfGrantedPowerRef.set(null);
+      await set(abraxSelfGrantedPowerRef, null);
     }
     if (heroName === 'Psique') {
-      await akumaStateRef.set({ name: "", akumaChat: [], power: "", privateChatActive: false });
-      await akumaChatRef.set([]); // Clear akuma chat history
-      await akumatizedEffectOnChatRef.set({ active: false, name: '', distortedMessages: false });
+      await set(akumaStateRef, { name: "", akumaChat: [], power: "", privateChatActive: false });
+      await set(akumaChatRef, {}); // Clear akuma chat history (set to empty object, not array for Firebase)
+      await set(akumatizedEffectOnChatRef, { active: false, name: '', distortedMessages: false });
       if (akumaState.name) { // If someone was akumatized by Psique
-          await chatBlockedStateRef.child(akumaState.name).set(false);
+          await set(ref(database, `chatBlockedState/${akumaState.name}`), false);
       }
       // Reset granted power by Psique
       if (psiqueGrantedPower.active && psiqueGrantedPower.granter === heroName) {
         alert(`O poder concedido a ${psiqueGrantedPower.targetHero} foi desativado com a destransformação de Psique.`);
-        await globalChatRef.push({ sender: 'Sistema', message: `O poder concedido a ${psiqueGrantedPower.targetHero} por Psique foi desativado!`, timestamp: Date.now() });
-        await psiqueGrantedPowerRef.set({ active: false, targetHero: '', grantedPowerType: '', usesRemaining: 0, granter: '' });
+        await push(globalChatRef, { sender: 'Sistema', message: `O poder concedido a ${psiqueGrantedPower.targetHero} por Psique foi desativado!`, timestamp: Date.now() });
+        await set(psiqueGrantedPowerRef, { active: false, targetHero: '', grantedPowerType: '', usesRemaining: 0, granter: '' });
       }
     }
     if (heroName === 'Yellowfer') {
-      await yellowferSecondChanceActiveRef.set(false);
-      await yellowferSecondChanceTimeRef.set(null);
+      await set(yellowferSecondChanceActiveRef, false);
+      await set(yellowferSecondChanceTimeRef, null);
       const secondChanceStatus = document.getElementById('secondChanceStatus');
       if (secondChanceStatus) secondChanceStatus.innerText = '';
     }
     if (heroName === 'Lindenbergue') {
-      await chatRedirectStateRef.set({ active: false, fromHero: '', toHero: '' });
+      await set(chatRedirectStateRef, { active: false, fromHero: '', toHero: '' });
     }
     if (heroName === 'Beast') {
-      await beastControlledElementsRef.set([]);
+      await set(beastControlledElementsRef, []);
       // Ensure any chat block by Beast is removed
       for (const hero of HERO_NAMES) {
-          if (chatBlockedState[hero]) {
-              await chatBlockedStateRef.child(hero).set(false);
+          const blocked = (await get(ref(database, `chatBlockedState/${hero}`))).val();
+          if (blocked) {
+              await set(ref(database, `chatBlockedState/${hero}`), false);
               alert(`${hero}'s chat has been unblocked as Beast destransformed.`);
-              await globalChatRef.push({ sender: 'Sistema', message: `${hero}'s chat has been UNBLOCKED due to Beast's destransformation!`, timestamp: Date.now() });
+              await push(globalChatRef, { sender: 'Sistema', message: `${hero}'s chat has been UNBLOCKED due to Beast's destransformation!`, timestamp: Date.now() });
           }
       }
     }
@@ -860,6 +955,7 @@ window.beast = beast;
         interfaceElement.style.display = 'flex';
     }
     currentActiveHero = heroName;
+    localStorage.setItem('lastActiveHero', heroName); // Store last active hero
 
     const endTime = transformEndTimes[heroName];
     if (endTime && !evolvedHeroes[heroName] && !(psiqueGrantedPower.active && psiqueGrantedPower.targetHero === heroName && psiqueGrantedPower.grantedPowerType === 'poder_ilimitado')) {
@@ -882,6 +978,7 @@ window.beast = beast;
     }
     document.getElementById('heroButtons').style.display = 'block';
     currentActiveHero = null;
+    localStorage.removeItem('lastActiveHero'); // Clear last active hero
     hideDestransformTimer();
   }
 
@@ -892,68 +989,186 @@ window.beast = beast;
         powerInterfaceElement.style.display = 'flex';
     }
     localStorage.setItem('lastChatInputId', chatInputId);
-    localStorage.setItem('lastActiveHero', heroName);
+    localStorage.setItem('lastActiveHero', heroName); // Still useful to know which hero was active
     currentActiveHero = heroName;
 
+    // Hide the chat input area when a power interface is shown
     const chatInputParent = document.getElementById(chatInputId)?.parentElement;
     if (chatInputParent) {
-        chatInputParent.style.display = 'none';
+      chatInputParent.style.display = 'none';
     }
   }
 
   function closePowerInterface(powerInterfaceId) {
     const powerInterfaceElement = document.getElementById(powerInterfaceId);
     if (powerInterfaceElement) {
-        powerInterfaceElement.style.display = 'none';
+      powerInterfaceElement.style.display = 'none';
     }
+
     const lastChatInputId = localStorage.getItem('lastChatInputId');
     const lastActiveHero = localStorage.getItem('lastActiveHero');
 
-    if (lastChatInputId && lastActiveHero) {
-      const heroInterfaceId = lastActiveHero.toLowerCase() + 'Interface';
+    // Show the corresponding hero interface and its chat input area
+    if (lastActiveHero) {
+      const heroInterfaceId = `${lastActiveHero.toLowerCase()}Interface`;
       const heroInterfaceElement = document.getElementById(heroInterfaceId);
       if (heroInterfaceElement) {
         heroInterfaceElement.style.display = 'flex';
+        const chatInputParent = document.getElementById(lastChatInputId)?.parentElement;
+        if (chatInputParent) {
+          chatInputParent.style.display = 'flex';
+        }
       }
-
-      const chatInputParent = document.getElementById(lastChatInputId)?.parentElement;
-      if (chatInputParent) {
-        chatInputParent.style.display = 'flex';
-      }
-    } else {
-      document.getElementById('heroButtons').style.display = 'block';
-      currentActiveHero = null;
     }
-    renderGlobalChat();
+    localStorage.removeItem('lastChatInputId'); // Clean up
   }
 
-  // --- Lógica de Comandos e Poderes ---
-  async function parseCommand(message, heroName) {
-    const command = message.toLowerCase().split(' ')[0];
-    const args = message.split(' ').slice(1).join(' ');
+  // Escutar ENTER para enviar mensagens no chat
+  document.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      const activeInterface = document.querySelector('.hero-interface[style*=\"display: flex\"]');
+      if (activeInterface) {
+        const heroId = activeInterface.id.replace('Interface', '');
+        const senderName = heroId.charAt(0).toUpperCase() + heroId.slice(1);
+        const chatInput = document.getElementById(`chatInput_${heroId}`);
+        const akumaChatInput = document.getElementById('akumaChatInput');
 
-    // NOVO: Impedir comandos se o chat estiver invertido
-    if (invertedChatState.active && invertedChatState.targetHero === heroName) {
-        alert(`${heroName}: Seu chat está invertido! Não é possível usar comandos agora.`);
-        return true; // Comando bloqueado
+        if (chatInput && document.activeElement === chatInput) {
+          sendMessage(senderName, heroId);
+        } else if (heroId === 'psique' && akumaChatInput && document.activeElement === akumaChatInput) {
+          sendAkumaMessage(senderName);
+        } else if (
+          akumaState.privateChatActive &&
+          akumaState.name === senderName &&
+          akumaChatInput &&
+          document.activeElement === akumaChatInput
+        ) {
+          sendAkumaMessage(senderName); // Akumatized person's chat
+        }
+      }
+    }
+  });
+
+  // --- Funções de Chat ---
+  async function sendMessage(senderName, heroId) {
+    const chatInput = document.getElementById(`chatInput_${heroId}`);
+    let message = chatInput.value.trim();
+    if (!message) {
+      return;
     }
 
-    // Check if hero has temporary granted power from Psique
-    let hasGrantedPower = false;
-    let grantedPowerCommand = null;
+    if (chatBlockedState[senderName]) {
+      alert(`${senderName}: Meu chat está bloqueado! Não consigo enviar mensagens!`);
+      chatInput.value = '';
+      return;
+    }
 
+    // NOVO: Impedir comandos se o chat estiver invertido
+    if (invertedChatState.active && invertedChatState.targetHero === senderName && message.startsWith('/')) {
+      alert(`${senderName}: Seu chat está invertido! Não é possível usar comandos agora.`);
+      chatInput.value = '';
+      return;
+    }
+
+    // Check for Abrax Puppet Strings
+    if (abraxPuppetStringsState.active && abraxPuppetStringsState.targetHero === senderName && abraxPuppetStringsState.messagesLeft > 0) {
+        const originalMessage = message;
+        message = `(Via ${senderName}) ${message}`; // Prepend with info
+        senderName = abraxPuppetStringsState.targetHero; // Send as target hero
+        await set(abraxPuppetStringsStateRef, { ...abraxPuppetStringsState, messagesLeft: abraxPuppetStringsState.messagesLeft - 1 });
+        if (abraxPuppetStringsState.messagesLeft - 1 <= 0) {
+            alert(`As cordas de fantoche de ${senderName} foram desativadas.`);
+            await push(globalChatRef, { sender: 'Sistema', message: `As cordas de fantoche de ${senderName} foram desativadas.`, timestamp: Date.now() });
+            await set(abraxPuppetStringsStateRef, { active: false, targetHero: '', messagesLeft: 0 });
+        }
+        await push(globalChatRef, { sender: senderName, message: originalMessage, originalSender: heroId.charAt(0).toUpperCase() + heroId.slice(1), timestamp: Date.now() });
+        chatInput.value = '';
+        return;
+    }
+
+    // Check for Lindenbergue Redirect
+    let finalSender = senderName;
+    let finalMessage = message;
+    let originalSender = senderName; // Keep track of the actual sender for effects like inversion/akuma
+
+    if (chatRedirectState.active && chatRedirectState.fromHero === senderName) {
+      finalSender = chatRedirectState.toHero;
+      finalMessage = `(Redirecionado de ${senderName}) ${message}`;
+      alert(`Sua mensagem foi redirecionada para ${finalSender}!`);
+    }
+
+    // Check for AKUMATIZED CHAT EFFECT (Psique)
+    if (akumatizedEffectOnChat.active && akumatizedEffectOnChat.name && akumatizedEffectOnChat.name === originalSender) {
+        if (akumatizedEffectOnChat.distortedMessages) {
+            finalMessage = `~ ${finalMessage.split('').reverse().join('')} ~`;
+        }
+        finalSender = `Akumatizado (${originalSender})`;
+    }
+
+    // Check for INVERTED CHAT EFFECT (Abrax) - This is for the *sender's view* and message content.
+    // The visual inversion for the *target* is handled in renderGlobalChat based on invertedChatState.targetHero
+    if (invertedChatState.active && invertedChatState.targetHero === originalSender) {
+        const words = finalMessage.split(' ');
+        const invertedWords = words.map(word => word.split('').reverse().join(''));
+        finalMessage = invertedWords.reverse().join(' ');
+        alert(`Sua mensagem foi invertida por Abrax: "${finalMessage}"`); // Alert the sender
+    }
+
+    if (message.startsWith('/')) {
+      const commandProcessed = await parseCommand(message, senderName);
+      if (commandProcessed) {
+        chatInput.value = '';
+        return;
+      }
+      alert(`Comando "${message}" inválido ou não aplicável para ${senderName}.`);
+    }
+
+    await push(globalChatRef, { sender: finalSender, message: finalMessage, originalSender: originalSender, timestamp: Date.now() });
+    chatInput.value = '';
+  }
+
+  async function sendAkumaMessage(senderName) {
+    const akumaChatInput = document.getElementById('akumaChatInput');
+    let message = akumaChatInput.value.trim();
+    if (!message) {
+      return;
+    }
+
+    if (!akumaState.privateChatActive || akumaState.name === "") {
+        alert("Nenhum akumatizado ativo para conversar ou chat privado não está ativo.");
+        akumaChatInput.value = '';
+        return;
+    }
+
+    const newMessage = { sender: senderName, message: message, timestamp: Date.now() };
+    await push(akumaChatRef, newMessage);
+    akumaChatInput.value = '';
+  }
+
+
+  // --- Funções de Ativação de Poderes ---
+  async function parseCommand(fullCommand, heroName) {
+    const parts = fullCommand.toLowerCase().split(' ');
+    const command = parts[0];
+    const args = parts.slice(1);
+
+    let hasGrantedPower = false;
+    let grantedPowerCommand = '';
+    // Check if the hero has a granted power from Psique
     if (psiqueGrantedPower.active && psiqueGrantedPower.targetHero === heroName) {
-        if (psiqueGrantedPower.grantedPowerType === 'poder_ilimitado') {
-            hasGrantedPower = true; // Always true, bypasses powerUsedState check
-        } else if (psiqueGrantedPower.usesRemaining > 0) {
-            // Map granted power types to specific commands
-            if (psiqueGrantedPower.grantedPowerType === 'criar_item' && command === '/genesis') {
+        if (psiqueGrantedPower.usesRemaining > 0 || psiqueGrantedPower.infinite) {
+            if (psiqueGrantedPower.grantedPowerType === 'poder_ilimitado' && HERO_NAMES.includes(heroName)) {
+                alert(`${heroName}: Você possui poder ilimitado!`);
+                // This power type usually just removes the timer, no specific command needed here.
+                // The timer logic is already updated by the onValue listener for psiqueGrantedPowerRef
+                return true; // Command consumed
+            } else if (psiqueGrantedPower.grantedPowerType === 'criar_item' && (command === '/genesis' || command === '/criar_item')) {
                 hasGrantedPower = true;
                 grantedPowerCommand = '/genesis';
             } else if (psiqueGrantedPower.grantedPowerType === 'reverter_tempo' && (command === '/segundachance' || command === '/voltar')) {
                 hasGrantedPower = true;
                 grantedPowerCommand = command;
-            } else if (psiqueGrantedPower.grantedPowerType === 'silenciar' && command === '/dragao_silenciar') { // A new command for granted silence
+            } else if (psiqueGrantedPower.grantedPowerType === 'silenciar_beast' && (command === '/dragao_silenciar' || command === '/silenciar')) { // Adjusted to silenciar_beast
                 hasGrantedPower = true;
                 grantedPowerCommand = '/dragao_silenciar';
             }
@@ -968,111 +1183,117 @@ window.beast = beast;
     const isHelpCommand = (command === '/ajuda');
     const isInverterCommand = (heroName === 'Abrax' && command === '/inverter');
     const isLitlegotUseCommand = (heroName === 'Litlegot' && command === '/usar');
-    const isAbraxOtherPowerCommand = (heroName === 'Abrax' && ABRAX_PREDEFINED_POWERS.includes(command.substring(1))); // Checa se é um poder de Abrax
-    const isPsiqueConcedePowerCommand = (heroName === 'Psique' && command === '/conceder_poder'); // NOVO: Comando de conceder poder
+    const isAbraxOtherPowerCommand = (heroName === 'Abrax' && ABRAX_PREDEFINED_POWERS.includes(command.substring(1))); // Checks if it's an Abrax power
+    const isPsiqueAkumatizacaoCommand = (heroName === 'Psique' && command === '/akumatizacao');
+    const isPsiqueConcedePowerCommand = (heroName === 'Psique' && command === '/conceder_poder');
 
-    const bypassPowerUsedCheck = isYellowferSecondChanceCommand || isYellowferVoltarCommand || isBeastDragonCommand || isEvolveCommand || isHelpCommand || isInverterCommand || isLitlegotUseCommand || isAbraxOtherPowerCommand || hasGrantedPower || isPsiqueConcedePowerCommand;
+    const bypassPowerUsedCheck = isYellowferSecondChanceCommand || isYellowferVoltarCommand || isBeastDragonCommand || isEvolveCommand || isHelpCommand || isInverterCommand || isLitlegotUseCommand || isAbraxOtherPowerCommand || hasGrantedPower || isPsiqueAkumatizacaoCommand || isPsiqueConcedePowerCommand;
 
-    if (powerUsedState[heroName] && !bypassPowerUsedCheck) {
-      alert(`${heroName}: Meu poder já foi usado nesta transformação!`);
-      return true;
+    const usedPowerStatus = (await get(ref(database, `powerUsedState/${heroName}`))).val(); // Fetch current powerUsedState for the hero
+
+    if (usedPowerStatus && !bypassPowerUsedCheck) {
+        alert(`${heroName}: Meu poder já foi usado nesta transformação!`);
+        return true; // Command consumed, but power not used
     }
 
-    // If a granted power was used, decrement uses (unless infinite)
-    if (hasGrantedPower && grantedPowerCommand) {
-        if (psiqueGrantedPower.grantedPowerType !== 'poder_ilimitado') {
-            await psiqueGrantedPowerRef.update({ usesRemaining: psiqueGrantedPower.usesRemaining - 1 });
-            if (psiqueGrantedPower.usesRemaining - 1 <= 0) {
-                await psiqueGrantedPowerRef.set({ active: false, targetHero: '', grantedPowerType: '', usesRemaining: 0, granter: '' });
-                alert(`${heroName}: O poder concedido por Psique (${psiqueGrantedPower.grantedPowerType}) foi consumido.`);
-                await globalChatRef.push({ sender: 'Sistema', message: `O poder temporário '${psiqueGrantedPower.grantedPowerType}' concedido a ${heroName} por Psique foi consumido.`, timestamp: Date.now() });
-            }
-        }
-        // If it's a granted power, execute the corresponding logic directly below without setting powerUsedState for the original hero
-    } else if (!hasGrantedPower || psiqueGrantedPower.grantedPowerType === 'poder_ilimitado') {
-        // If it's a normal power, or infinite granted power, set powerUsedState for the original hero
-        if (command === '/genesis' && heroName === 'Litlegot' ||
-            command === '/sublimacao' && heroName === 'Abrax' ||
-            command === '/akumatizacao' && heroName === 'Psique' ||
-            command === '/viajar' && heroName === 'Lindenbergue' ||
-            (command === '/segundachance' && heroName === 'Yellowfer' && !yellowferSecondChanceActive) ||
-            (command === '/dragao' && heroName === 'Beast' && beastControlledElements.length < 3)) { // Only marks as used when 3 elements are hit for Beast
-            await powerUsedRef.child(heroName).set(true);
+    // Mark power as used ONLY if it's not a bypass and it's a "main" power use
+    if (!bypassPowerUsedCheck) { // If it's a command that consumes power for the hero
+        await set(ref(database, `powerUsedState/${heroName}`), true);
+        startTransformTimer(heroName);
+    } else if ( (command === '/segundachance' && heroName === 'Yellowfer' && !yellowferSecondChanceActive) || (command === '/dragao' && heroName === 'Beast' && beastControlledElements.length < 3)) { // Only marks as used when 3 elements are hit for Beast, or Second Chance is activated for Yellowfer
+        if (command === '/segundachance' && heroName === 'Yellowfer' && !yellowferSecondChanceActive) {
+            await set(ref(database, `powerUsedState/${heroName}`), true);
             startTransformTimer(heroName);
+        } else if (command === '/dragao' && heroName === 'Beast') {
+             // PowerUsed state for Beast will be handled within activateDragao
+             // Timer will also be handled there when 3 elements are activated
         }
     }
 
 
     switch (command) {
       case '/genesis':
+      case '/criar_item': // Alias for genesis, especially if granted by Psique
         if (heroName === 'Litlegot' || (hasGrantedPower && grantedPowerCommand === '/genesis')) {
-          showPowerInterface('litlegotGenesisInterface', heroName, `chatInput_litlegot`); // Still uses Litlegot's interface
+          showPowerInterface('litlegotGenesisInterface', heroName, `chatInput_litlegot`);
+          if (hasGrantedPower && !psiqueGrantedPower.infinite) {
+             await set(psiqueGrantedPowerRef, { ...psiqueGrantedPower, usesRemaining: psiqueGrantedPower.usesRemaining - 1 });
+          }
           return true;
         }
         break;
       case '/usar':
         if (heroName === 'Litlegot') {
-            await activateLitlegotUse(args);
-            return true;
+          await activateLitlegotUse(args);
+          return true;
         }
         break;
       case '/sublimacao':
         if (heroName === 'Abrax') {
-          await activateSublimacao(); // Chama a função diretamente com a lista de poderes
+          await activateSublimacao();
           return true;
         }
         break;
       case '/inverter':
         if (heroName === 'Abrax' && abraxSelfGrantedPower === 'inversao') {
-            await activateAbraxInverter(args);
-            return true;
+          await activateAbraxInverter(args);
+          await set(abraxSelfGrantedPowerRef, null); // Consume power
+          return true;
         } else if (heroName === 'Abrax' && abraxSelfGrantedPower) {
-            alert(`Abrax: Você não possui o poder de Inversão. Você possui o poder de "${abraxSelfGrantedPower}".`);
-            return true;
+          alert(`Abrax: Você não possui o poder de Inversão. Você possui o poder de "${abraxSelfGrantedPower}".`);
+          return true;
         } else if (heroName === 'Abrax') {
-            alert('Abrax: Você não possui nenhum poder concedido. Use /sublimacao primeiro.');
-            return true;
+          alert('Abrax: Você não possui nenhum poder concedido. Use /sublimacao primeiro.');
+          return true;
         }
         break;
-      case '/oraculo': // NOVO PODER ABRAX
+      case '/oraculo':
         if (heroName === 'Abrax' && abraxSelfGrantedPower === 'oraculo') {
-            await activateAbraxOraculo();
-            return true;
+          await activateAbraxOraculo();
+          await set(abraxSelfGrantedPowerRef, null); // Consume power
+          return true;
         } else if (heroName === 'Abrax' && abraxSelfGrantedPower) {
-            alert(`Abrax: Você não possui o poder de Oráculo. Você possui o poder de "${abraxSelfGrantedPower}".`);
-            return true;
+          alert(`Abrax: Você não possui o poder de Oráculo. Você possui o poder de "${abraxSelfGrantedPower}".`);
+          return true;
         }
         break;
-      case '/cordasdefantoche': // NOVO PODER ABRAX
+      case '/cordasdefantoche':
         if (heroName === 'Abrax' && abraxSelfGrantedPower === 'cordas de fantoche') {
-            await activateAbraxCordasDeFantoche(args);
-            return true;
+          await activateAbraxCordasDeFantoche(args[0]);
+          await set(abraxSelfGrantedPowerRef, null); // Consume power
+          return true;
         } else if (heroName === 'Abrax' && abraxSelfGrantedPower) {
-            alert(`Abrax: Você não possui o poder de Cordas de Fantoche. Você possui o poder de "${abraxSelfGrantedPower}".`);
-            return true;
+          alert(`Abrax: Você não possui o poder de Cordas de Fantoche. Você possui o poder de "${abraxSelfGrantedPower}".`);
+          return true;
         }
         break;
       case '/akumatizacao':
         if (heroName === 'Psique') {
-          promptAkumaName();
+          await activatePsiqueAkumatizacao();
           return true;
         }
         break;
-      case '/conceder_poder': // NOVO COMANDO PSIQUE
+      case '/conceder_poder':
         if (heroName === 'Psique') {
-            await activatePsiqueGrantPower();
-            return true;
+          await activatePsiqueConcedePower();
+          return true;
         }
         break;
       case '/segundachance':
-        if (heroName === 'Yellowfer' || (hasGrantedPower && grantedPowerCommand === '/segundachance')) {
-          showPowerInterface('yellowferSecondChanceInterface', heroName, `chatInput_yellowfer`); // Still uses Yellowfer's interface
+        if (heroName === 'Yellowfer' || (hasGrantedPower && (grantedPowerCommand === '/segundachance' || grantedPowerCommand === '/voltar'))) {
+          showPowerInterface('yellowferSecondChanceInterface', heroName, `chatInput_yellowfer`);
+          if (hasGrantedPower && !psiqueGrantedPower.infinite) {
+            await set(psiqueGrantedPowerRef, { ...psiqueGrantedPower, usesRemaining: psiqueGrantedPower.usesRemaining - 1 });
+          }
           return true;
         }
         break;
       case '/voltar':
-        if (heroName === 'Yellowfer' || (hasGrantedPower && grantedPowerCommand === '/voltar')) {
-          await triggerSecondChanceReturn();
+        if (heroName === 'Yellowfer' || (hasGrantedPower && (grantedPowerCommand === '/segundachance' || grantedPowerCommand === '/voltar'))) {
+          await activateYellowferVoltar(heroName);
+          if (hasGrantedPower && !psiqueGrantedPower.infinite) {
+            await set(psiqueGrantedPowerRef, { ...psiqueGrantedPower, usesRemaining: psiqueGrantedPower.usesRemaining - 1 });
+          }
           return true;
         }
         break;
@@ -1082,16 +1303,19 @@ window.beast = beast;
           return true;
         }
         break;
-      case '/dragao': // Beast's dragon power
+      case '/dragao':
         if (heroName === 'Beast') {
           showPowerInterface('beastDragaoInterface', heroName, `chatInput_beast`);
           return true;
         }
         break;
-      case '/dragao_silenciar': // Granted silence power
+      case '/dragao_silenciar': // Granted silence power by Psique, for Beast-like control
         if (hasGrantedPower && grantedPowerCommand === '/dragao_silenciar') {
-            await activateBeastSilence(args, heroName); // Reuses Beast's silence logic
-            return true;
+          await activateBeastSilence(args, heroName); // Reuses Beast's silence logic
+          if (hasGrantedPower && !psiqueGrantedPower.infinite) {
+            await set(psiqueGrantedPowerRef, { ...psiqueGrantedPower, usesRemaining: psiqueGrantedPower.usesRemaining - 1 });
+          }
+          return true;
         }
         break;
       case '/evoluir':
@@ -1111,61 +1335,61 @@ window.beast = beast;
         helpMessage += "Psique: /conceder_poder (Concede um poder temporário a outro herói: " + PSIQUE_CONCEDE_POWERS.map(p => `"${p}"`).join(', ') + ")\n";
         helpMessage += "Yellowfer: /segundachance (Define um ponto de retorno no tempo) & /voltar (Reverte o chat, desfazendo mensagens recentes)\n";
         helpMessage += "Lindenbergue: /viajar (Abre portal, pode redirecionar/acessar chat de outro herói)\n";
-        helpMessage += "Beast: /dragao (Controla elementos, pode silenciar um herói por 30s ao ativar 3 elementos)\n";
+        helpMessage += "Beast: /dragao [elemento] (Controla elemento) & /silenciar [heroi] (Silencia o chat de um herói por 15s - APENAS SE FOR PODER CONCEDIDO)\n"; // Clarified Beast silence
         alert(helpMessage);
         return true;
+        break;
+      default:
+        return false; // Command not recognized or not handled here
     }
-    return false;
+    return false; // Fallback if no command matched
   }
 
-  // --- Funções de Poder Específicas ---
-
+  // --- Litlegot Powers ---
   async function activateGenesis() {
+    const heroName = 'Litlegot';
     const objectName = document.getElementById('genesisObjectInput').value.trim();
     const outputDisplay = document.getElementById('genesisOutput');
-    const heroName = currentActiveHero; // This function can now be called by a granted hero
 
     if (!objectName) {
-      outputDisplay.innerText = 'Por favor, digite o que deseja criar.';
+      outputDisplay.innerText = 'Por favor, insira o nome do objeto a ser criado.';
       return;
     }
-    if (objectName.toLowerCase().includes('magia')) {
-      outputDisplay.innerText = 'Litlegot: Limite! Não posso criar magia.';
-      return;
-    }
-
-    outputDisplay.innerText = `${heroName} (via Litlegot) usou Gênesis e criou: ${objectName}!`;
-    // powerUsedRef and startTransformTimer are handled in parseCommand for granted powers
-    alert(`${heroName} (via Litlegot) usou Gênesis e criou: ${objectName}!`);
-
-    await globalChatRef.push({ sender: 'Sistema', message: `${heroName} (com poder de Litlegot) materializou: "${objectName}" no campo de batalha!`, timestamp: Date.now() });
-
-    await litlegotCreatedItemRef.set(objectName);
-    alert(`Item "${objectName}" criado! Outros heróis podem tentar usar "/usar ${objectName}" no chat.`);
-    closePowerInterface('litlegotGenesisInterface');
-  }
-
-  async function activateLitlegotUse(itemToUse) {
-    const heroName = currentActiveHero;
-    if (!litlegotCreatedItem) {
-        alert('Não há nenhum item criado por Litlegot para ser usado.');
+    if (litlegotCreatedItem) {
+        outputDisplay.innerText = `Você já criou um item: "${litlegotCreatedItem}". Use-o primeiro com /usar.`;
         return;
     }
 
+    await set(litlegotCreatedItemRef, objectName);
+    await push(globalChatRef, { sender: 'Sistema', message: `${heroName} criou um item: "${objectName}"!`, timestamp: Date.now() });
+    outputDisplay.innerText = `Item "${objectName}" criado com sucesso!`;
+  }
+
+  async function activateLitlegotUse(args) {
+    const heroName = 'Litlegot';
+    const itemToUse = args.join(' ').trim();
+    if (!itemToUse) {
+        alert('Litlegot: Qual item deseja usar? Use: /usar [nome do item]');
+        return;
+    }
+    if (!litlegotCreatedItem) {
+        alert('Litlegot: Nenhum item para ser usado.');
+        return;
+    }
     if (itemToUse.toLowerCase() === litlegotCreatedItem.toLowerCase()) {
         alert(`${heroName} usou "${litlegotCreatedItem}"!`);
-        await globalChatRef.push({ sender: 'Sistema', message: `${heroName} usou o item "${litlegotCreatedItem}" criado por Litlegot!`, timestamp: Date.now() });
-
+        await push(globalChatRef, { sender: 'Sistema', message: `${heroName} usou o item "${litlegotCreatedItem}" criado por Litlegot!`, timestamp: Date.now() });
         // Real effect: Unblock the user's chat if blocked
-        if (chatBlockedState[heroName]) {
-            await chatBlockedStateRef.child(heroName).set(false);
+        const targetChatBlocked = (await get(ref(database, `chatBlockedState/${heroName}`))).val();
+        if (targetChatBlocked) {
+            await set(ref(database, `chatBlockedState/${heroName}`), false);
             alert(`${heroName}: Meu chat foi desbloqueado pelo item "${litlegotCreatedItem}"!`);
-            await globalChatRef.push({ sender: 'Sistema', message: `${heroName}'s chat has been UNBLOCKED by the item!`, timestamp: Date.now() });
+            await push(globalChatRef, { sender: 'Sistema', message: `${heroName}'s chat has been UNBLOCKED by the item!`, timestamp: Date.now() });
         } else {
             alert(`${heroName}: Senti um pequeno buff de comunicação!`);
-            await globalChatRef.push({ sender: 'Sistema', message: `${heroName} received a communication buff!`, timestamp: Date.now() });
+            await push(globalChatRef, { sender: 'Sistema', message: `${heroName} received a communication buff!`, timestamp: Date.now() });
         }
-        await litlegotCreatedItemRef.set(null); // Consume the item
+        await set(litlegotCreatedItemRef, null); // Consume the item
         return true;
     } else {
         alert(`Item "${itemToUse}" não encontrado ou não corresponde ao item criado.`);
@@ -1173,184 +1397,143 @@ window.beast = beast;
     }
   }
 
-
+  // --- Abrax Powers ---
   async function activateSublimacao() {
     const heroName = 'Abrax';
     const powersList = ABRAX_PREDEFINED_POWERS.map((p, i) => `${i + 1}. ${p}`).join('\n');
     const choice = prompt(`Abrax: Escolha um poder para sublimar:\n${powersList}\nDigite o nome exato ou o número correspondente:`);
-
     let powerToGrant = null;
 
     if (choice) {
-        const parsedChoice = parseInt(choice);
-        if (!isNaN(parsedChoice) && parsedChoice >= 1 && parsedChoice <= ABRAX_PREDEFINED_POWERS.length) {
-            powerToGrant = ABRAX_PREDEFINED_POWERS[parsedChoice - 1];
-        } else if (ABRAX_PREDEFINED_POWERS.includes(choice.toLowerCase())) {
-            powerToGrant = choice.toLowerCase();
-        }
+      const parsedChoice = parseInt(choice);
+      if (!isNaN(parsedChoice) && parsedChoice >= 1 && parsedChoice <= ABRAX_PREDEFINED_POWERS.length) {
+        powerToGrant = ABRAX_PREDEFINED_POWERS[parsedChoice - 1];
+      } else if (ABRAX_PREDEFINED_POWERS.includes(choice.toLowerCase())) {
+        powerToGrant = choice.toLowerCase();
+      }
     }
 
     if (!powerToGrant) {
-      alert('Abrax: Escolha inválida. Por favor, selecione um poder da lista.');
+      alert('Abrax: Escolha de poder inválida. Sublimação cancelada.');
       return;
     }
 
-    alert(`Abrax usou Sublimação e concedeu a si mesmo o poder de: ${powerToGrant}!`);
-    // powerUsedRef and startTransformTimer are handled in parseCommand
-    await globalChatRef.push({ sender: 'Sistema', message: `Abrax se sublimou e adquiriu o poder de: "${powerToGrant}"!`, timestamp: Date.now() });
-
-    await abraxSelfGrantedPowerRef.set(powerToGrant);
-    alert(`Abrax adquiriu o poder de ${powerToGrant}! Use o comando correspondente.`);
-    closePowerInterface('abraxSublimacaoInterface'); // Fecha a interface de seleção de poder
+    await set(abraxSelfGrantedPowerRef, powerToGrant);
+    alert(`Abrax: Você concedeu a si mesmo o poder de "${powerToGrant}"! Use /${powerToGrant} para ativá-lo.`);
+    await push(globalChatRef, { sender: 'Sistema', message: `Abrax sublimou e concedeu a si mesmo o poder: "${powerToGrant}"!`, timestamp: Date.now() });
+    document.getElementById('sublimacaoOutput').innerText = `Poder concedido: "${powerToGrant}"`;
   }
 
-  async function activateAbraxInverter(targetHero) {
+  async function activateAbraxInverter(args) {
     const heroName = 'Abrax';
-    const trimmedTargetHero = targetHero.trim();
-
-    if (!HERO_NAMES.includes(trimmedTargetHero) || trimmedTargetHero === heroName) {
-        alert('Abrax: Alvo inválido ou você não pode inverter seu próprio chat.');
-        return;
+    const targetHero = args.join(' ').trim();
+    if (!targetHero || !HERO_NAMES.includes(targetHero)) {
+      alert('Abrax: Alvo inválido. Especifique um herói válido para inverter.');
+      return;
+    }
+    if (targetHero === heroName) {
+      alert('Abrax: Você não pode inverter seu próprio chat.');
+      return;
     }
 
-    alert(`Abrax: Invertendo o chat de ${trimmedTargetHero} por 30 segundos!`);
-    await globalChatRef.push({ sender: 'Sistema', message: `Abrax usou o poder de Inversão! O chat de ${trimmedTargetHero} será invertido por 30 segundos!`, timestamp: Date.now() });
+    alert(`Abrax: Você ativou Inversão no chat de ${targetHero}!`);
+    await push(globalChatRef, { sender: 'Sistema', message: `Abrax usou Inversão no chat de ${targetHero}!`, timestamp: Date.now() });
+    await set(invertedChatStateRef, { active: true, targetHero: targetHero });
 
-    await invertedChatStateRef.set({ active: true, targetHero: trimmedTargetHero });
-
-    // Temporizador para reverter a inversão
     setTimeout(async () => {
-        await invertedChatStateRef.set({ active: false, targetHero: '' });
-        alert(`O chat de ${trimmedTargetHero} voltou ao normal.`);
-        await globalChatRef.push({ sender: 'Sistema', message: `O chat de ${trimmedTargetHero} voltou ao normal!`, timestamp: Date.now() });
+      await set(invertedChatStateRef, { active: false, targetHero: '' });
+      alert(`Abrax: O chat de ${targetHero} voltou ao normal!`);
+      await push(globalChatRef, { sender: 'Sistema', message: `O chat de ${targetHero} voltou ao normal!`, timestamp: Date.now() });
     }, 30000); // Inverte por 30 segundos
-
-    await abraxSelfGrantedPowerRef.set(null); // Consome o poder
   }
 
   async function activateAbraxOraculo() {
     const heroName = 'Abrax';
     const lastFiveMessages = globalChatMessages.slice(-5); // Get last 5 messages
-
     let oracleOutput = "Abrax (Oráculo): Últimas 5 mensagens do chat:\n\n";
-    if (lastFiveMessages.length === 0) {
-        oracleOutput += "Nenhuma mensagem no chat ainda.";
-    } else {
-        lastFiveMessages.forEach(msg => {
-            oracleOutput += `- ${msg.sender}: ${msg.message}\n`;
-        });
-    }
 
+    if (lastFiveMessages.length === 0) {
+      oracleOutput += "Nenhuma mensagem no chat ainda.";
+    } else {
+      lastFiveMessages.forEach(msg => {
+        const date = new Date(msg.timestamp);
+        oracleOutput += `- ${msg.sender} (${date.toLocaleTimeString()}): ${msg.message}\n`;
+      });
+    }
     alert(oracleOutput);
-    await set(push(globalChatRef), {
-  sender: 'Sistema',
-  message: `Abrax usou Oráculo para ver o fluxo do tempo!`,
-  timestamp: Date.now()
-});
-    await abraxSelfGrantedPowerRef.set(null); // Consome o poder
+    await push(globalChatRef, { sender: 'Sistema', message: `Abrax usou Oráculo para ver o fluxo do tempo!`, timestamp: Date.now() });
   }
 
   async function activateAbraxCordasDeFantoche(targetHero) {
     const heroName = 'Abrax';
-    const trimmedTargetHero = targetHero.trim();
+    const trimmedTargetHero = targetHero ? targetHero.trim() : '';
 
     if (!HERO_NAMES.includes(trimmedTargetHero) || trimmedTargetHero === heroName) {
-        alert('Abrax: Alvo inválido ou você não pode controlar a si mesmo.');
-        return;
+      alert('Abrax: Alvo inválido ou você não pode controlar a si mesmo.');
+      return;
     }
-
     alert(`Abrax: Você ativou Cordas de Fantoche em ${trimmedTargetHero}! Suas próximas 3 mensagens serão enviadas como se fossem dele(a).`);
-    await set(push(globalChatRef), {
-  sender: 'Sistema',
-  message: `Abrax usou Cordas de Fantoche em ${targetHero}.`,
-  timestamp: Date.now()
-});
-    await abraxPuppetStringsStateRef.set({ active: true, targetHero: trimmedTargetHero, messagesLeft: 3 });
-    await abraxSelfGrantedPowerRef.set(null); // Consome o poder
+    await push(globalChatRef, { sender: 'Sistema', message: `Abrax usou Cordas de Fantoche em ${trimmedTargetHero}.`, timestamp: Date.now() });
+    await set(abraxPuppetStringsStateRef, { active: true, targetHero: trimmedTargetHero, messagesLeft: 3 });
   }
 
-
-  // --- Psique - Akumatização ---
-
-  function updateAkumaDisplay() {
+  // --- Psique Powers ---
+  async function updateAkumaDisplay() {
     const akumatizedNameDisplay = document.getElementById('akumatizedNameDisplay');
-    akumatizedNameDisplay.innerText = akumaState.name ? `${akumaState.name} (Poder: ${akumaState.power || 'Variável'})` : 'Ninguém';
+    if (akumatizedNameDisplay) {
+        akumatizedNameDisplay.innerText = akumaState.name ? `${akumaState.name} (Poder: ${akumaState.power || 'N/A'})` : 'Ninguém';
+    }
   }
 
   async function promptAkumaName() {
+    const heroName = 'Psique';
     if (akumaState.name) {
-      alert(`Psique: Já há uma pessoa akumatizada: ${akumaState.name}. Desakumatize antes de akumatizar outro.`);
+      alert(`Psique: ${akumaState.name} já está akumatizado(a). Desakumatize-o(a) primeiro.`);
       return;
     }
-    if (powerUsedState['Psique']) {
-      alert("Psique: Akumatização já utilizada nesta transformação.");
+    const personName = prompt("Psique: Quem você deseja akumatizar?");
+    if (!personName || personName.trim() === '') {
+      alert("Psique: Nome inválido. Akumatização cancelada.");
+      return;
+    }
+    const akumaPower = prompt(`Psique: Qual poder de Akuma ${personName} terá? (Ex: bloqueio de voz, distorção de mensagens)`);
+    if (!akumaPower || akumaPower.trim() === '') {
+      alert("Psique: Poder inválido. Akumatização cancelada.");
       return;
     }
 
-    const personName = prompt("Psique: Quem você deseja Akumatizar? (Nome da pessoa)");
-    if (!personName || personName.trim() === "") {
-      alert("Akumatização cancelada. Nome inválido.");
-      return;
-    }
-    const isVoluntary = confirm(`Psique: ${personName} é voluntário(a) para a akumatização? (OK para sim, Cancelar para não)`);
-    let akumaPower = '';
-
-    if (isVoluntary) {
-      akumaPower = prompt(`Psique: Qual o poder do Akumatizado ${personName}? (Ex: "Bloqueio de Voz", "Distorção de Mensagens")`);
-      if (akumaPower === null || akumaPower.trim() === "") {
-        alert("Poder não especificado. Akumatização cancelada.");
-        return;
-      }
-    } else {
-      alert("O poder variará de acordo com a emoção da vítima.");
-    }
-    window.resetHeroState = resetHeroState;
-window.showInterface = showInterface;
-window.closeInterface = closeInterface;
-window.updateDestransformTimerDisplay = updateDestransformTimerDisplay;
-window.hideDestransformTimer = hideDestransformTimer;
-window.updateAkumaDisplay = updateAkumaDisplay;
-    // NOVO: Perguntar se deseja ativar o chat privado
+    // Confirm activation of private chat
     const activatePrivateChat = confirm("Psique: Deseja ativar um chat privado com o akumatizado?");
 
-
     const newAkumaState = {
-        name: personName.trim(),
-        power: akumaPower.trim(),
-        akumaChat: [], // This will be implicitly managed by renderAkumaChat based on privateChatActive
-        privateChatActive: activatePrivateChat
+      name: personName.trim(),
+      power: akumaPower.trim(),
+      privateChatActive: activatePrivateChat
     };
-    await akumaStateRef.set(newAkumaState);
-
-    if (activatePrivateChat) { // Only clear akuma chat history if private chat is activated
-        await akumaChatRef.set([]);
+    await set(akumaStateRef, newAkumaState);
+    if (activatePrivateChat) {
+      await set(akumaChatRef, {}); // Clear akuma chat history for new akumatization
     }
 
-
-    // powerUsedRef and startTransformTimer handled in parseCommand
-
-    alert(`Psique: ${personName} foi akumatizado(a)! Poder: ${akumaPower || 'Varia de pessoa para pessoa'}`);
-
-    await globalChatRef.push({ sender: 'Sistema', message: `Psique akumatizou: "${personName}"! Um novo vilão surgiu!`, timestamp: Date.now() });
+    alert(`Psique: ${personName} foi akumatizado(a)! Poder: ${akumaPower}`);
+    await push(globalChatRef, { sender: 'Sistema', message: `Psique akumatizou: "${personName}"! Um novo vilão surgiu!`, timestamp: Date.now() });
 
     // REAL AKUMATIZATION EFFECTS
-    const newAkumatizedEffectOnChat = {
-        active: true,
-        name: personName.trim(),
-        distortedMessages: false
-    };
-
+    const newAkumatizedEffectOnChat = { active: true, name: personName.trim(), distortedMessages: false };
     if (akumaPower.toLowerCase().includes('bloqueio de voz')) {
-        await chatBlockedStateRef.child(personName.trim()).set(true);
-        await globalChatRef.push({ sender: 'Sistema', message: `O chat de ${personName} está agora BLOQUEADO pelo poder de Akuma!`, timestamp: Date.now() });
+        await set(ref(database, `chatBlockedState/${personName.trim()}`), true);
+        await push(globalChatRef, { sender: 'Sistema', message: `O chat de ${personName} está agora BLOQUEADO pelo poder de Akuma!`, timestamp: Date.now() });
     }
     if (akumaPower.toLowerCase().includes('distorção de mensagens')) {
         newAkumatizedEffectOnChat.distortedMessages = true;
-        await globalChatRef.push({ sender: 'Sistema', message: `As mensagens de ${personName} serão DISTORCIDAS no chat!`, timestamp: Date.now() });
+        await push(globalChatRef, { sender: 'Sistema', message: `As mensagens de ${personName} serão DISTORCIDAS no chat!`, timestamp: Date.now() });
     }
-    await akumatizedEffectOnChatRef.set(newAkumatizedEffectOnChat);
-
+    await set(akumatizedEffectOnChatRef, newAkumatizedEffectOnChat);
     renderAkumaChat(); // Update visibility based on privateChatActive
+
+    // Mark Psique's power as used and start timer
+    await set(ref(database, `powerUsedState/${heroName}`), true);
+    startTransformTimer(heroName);
   }
 
   async function desakumatizar() {
@@ -1358,71 +1541,49 @@ window.updateAkumaDisplay = updateAkumaDisplay;
       alert("Psique: Ninguém akumatizado no momento.");
       return;
     }
-
     const confirmDesakuma = confirm(`Psique: Deseja desakumatizar ${akumaState.name}?`);
     if (confirmDesakuma) {
-      alert(`Psique: ${akumaState.name} foi desakumatizado(a)!`);
+      const formerlyAkumatized = akumaState.name;
+      alert(`Psique: ${formerlyAkumatized} foi desakumatizado(a)!`);
+      await push(globalChatRef, { sender: 'Sistema', message: `Psique desakumatizou: "${formerlyAkumatized}"! A paz retornou!`, timestamp: Date.now() });
 
-      await globalChatRef.push({ sender: 'Sistema', message: `Psique desakumatizou: "${akumaState.name}"! O mal foi purificado.`, timestamp: Date.now() });
-
-      // Remove real akumatization effects
-      await chatBlockedStateRef.child(akumaState.name).set(false);
-      await akumatizedEffectOnChatRef.set({ active: false, name: '', distortedMessages: false });
-
-      await akumaStateRef.set({ name: "", akumaChat: [], power: "", privateChatActive: false });
-      await akumaChatRef.set([]); // Clear akuma chat history
-      renderAkumaChat(); // Update visibility
+      // Reset Akuma states
+      await set(akumaStateRef, { name: "", akumaChat: [], power: "", privateChatActive: false });
+      await set(akumaChatRef, {}); // Clear akuma chat history
+      await set(akumatizedEffectOnChatRef, { active: false, name: '', distortedMessages: false });
+      await set(ref(database, `chatBlockedState/${formerlyAkumatized}`), false); // Unblock chat
+      await set(ref(database, `powerUsedState/Psique`), false); // Reset Psique's power usage after desakumatizing
+      hideDestransformTimer(); // Psique's timer would stop on desakumatization if it's her power that consumes it.
+      resetHeroState('Psique'); // Reset Psique's state as well, including her timer
+      renderAkumaChat();
     }
   }
 
-  async function sendAkumaMessage(senderName) {
-    const akumaChatInput = document.getElementById('akumaChatInput');
-    const message = akumaChatInput.value.trim();
-
-    if (!akumaState.name || !akumaState.privateChatActive) {
-        alert("Não há chat Akumatizado ativo no momento.");
-        akumaChatInput.value = '';
-        return;
-    }
-
-    // Allow Psique or the akumatized person to send messages to this chat
-    if (message && (senderName === 'Psique' || senderName === akumaState.name)) {
-      await akumaChatRef.push({ sender: senderName, message: message, timestamp: Date.now() });
-      akumaChatInput.value = '';
-    } else {
-      alert("Você não tem permissão para enviar mensagens para este chat Akumatizado.");
-    }
-  }
-    window.sendAkumaMessage = sendAkumaMessage;
-  // NOVO: Psique concede poderes
-  async function activatePsiqueGrantPower() {
+  async function activatePsiqueConcedePower() {
     const heroName = 'Psique';
-    if (psiqueGrantedPower.active) {
-        alert(`Psique: Já há um poder concedido a ${psiqueGrantedPower.targetHero}. Espere o efeito terminar ou destransforme.`);
-        return;
-    }
+    // Check if Psique has already used her power
     if (powerUsedState[heroName]) {
-        alert("Psique: Seu poder de conceder já foi usado nesta transformação.");
-        return;
+      alert("Psique: Seu poder de conceder já foi usado nesta transformação.");
+      return;
     }
 
     const targetHero = prompt("Psique: Para qual herói você deseja conceder um poder? (Nome completo do herói)");
     if (!HERO_NAMES.includes(targetHero) || targetHero === heroName) {
-        alert('Psique: Alvo inválido ou você não pode conceder poder a si mesma.');
-        return;
+      alert('Psique: Alvo inválido ou você não pode conceder poder a si mesma.');
+      return;
     }
 
     const powersList = PSIQUE_CONCEDE_POWERS.map((p, i) => `${i + 1}. ${p}`).join('\n');
     const powerType = prompt(`Psique: Qual poder deseja conceder a ${targetHero}?\n${powersList}\nDigite o nome exato ou o número correspondente:`);
-
     let selectedPowerType = null;
+
     if (powerType) {
-        const parsedChoice = parseInt(powerType);
-        if (!isNaN(parsedChoice) && parsedChoice >= 1 && parsedChoice <= PSIQUE_CONCEDE_POWERS.length) {
-            selectedPowerType = PSIQUE_CONCEDE_POWERS[parsedChoice - 1];
-        } else if (PSIQUE_CONCEDE_POWERS.includes(powerType.toLowerCase())) {
-            selectedPowerType = powerType.toLowerCase();
-        }
+      const parsedChoice = parseInt(powerType);
+      if (!isNaN(parsedChoice) && parsedChoice >= 1 && parsedChoice <= PSIQUE_CONCEDE_POWERS.length) {
+        selectedPowerType = PSIQUE_CONCEDE_POWERS[parsedChoice - 1];
+      } else if (PSIQUE_CONCEDE_POWERS.includes(powerType.toLowerCase())) {
+        selectedPowerType = powerType.toLowerCase();
+      }
     }
 
     if (!selectedPowerType) {
@@ -1433,155 +1594,139 @@ window.updateAkumaDisplay = updateAkumaDisplay;
     let uses = 1;
     let isInfinite = false;
     if (selectedPowerType === 'poder_ilimitado') {
-        isInfinite = true;
-        uses = 9999; // Effectively infinite for the duration of Psique's transformation
+      isInfinite = true;
+      uses = 9999; // Effectively infinite for the duration of Psique's transformation
     }
 
-    await psiqueGrantedPowerRef.set({
-        active: true,
-        granter: heroName,
-        targetHero: targetHero,
-        grantedPowerType: selectedPowerType,
-        usesRemaining: uses,
-        infinite: isInfinite
-    });
-
-    await powerUsedRef.child(heroName).set(true); // Psique used her power
+    await set(psiqueGrantedPowerRef, { active: true, granter: heroName, targetHero: targetHero, grantedPowerType: selectedPowerType, usesRemaining: uses, infinite: isInfinite });
+    await set(ref(database, `powerUsedState/${heroName}`), true); // Psique used her power
     startTransformTimer(heroName);
-
     alert(`Psique: Você concedeu "${selectedPowerType}" a ${targetHero}!`);
-    await globalChatRef.push({ sender: 'Sistema', message: `Psique concedeu o poder "${selectedPowerType}" a ${targetHero}!`, timestamp: Date.now() });
-
-    // If power_ilimitado is granted, update timer for target hero if they are active
-    if (selectedPowerType === 'poder_ilimitado') {
-        if (currentActiveHero === targetHero) {
-            hideDestransformTimer(); // Hide timer if they are currently active
-        }
-        // Also clear their timer in Firebase
-        if (transformTimers[targetHero]) {
-            clearTimeout(transformTimers[targetHero]);
-            delete transformTimers[targetHero];
-            await heroTransformEndTimesRef.child(targetHero).remove();
-        }
-    }
+    await push(globalChatRef, { sender: 'Sistema', message: `Psique concedeu o poder "${selectedPowerType}" a ${targetHero}!`, timestamp: Date.now() });
   }
 
 
-  // --- Yellowfer - Segunda Chance ---
-
+  // --- Yellowfer Powers ---
   async function activateSecondChance() {
-    const heroName = currentActiveHero; // Can be a granted hero
-    await yellowferSecondChanceActiveRef.set(true);
-    await yellowferSecondChanceTimeRef.set(Date.now());
+    const heroName = 'Yellowfer';
+    const statusDisplay = document.getElementById('secondChanceStatus');
 
-    // powerUsedRef and startTransformTimer are handled in parseCommand for granted powers
-    alert(`${heroName} (via Yellowfer) ativou Segunda Chance!`);
-
-    await globalChatRef.push({ sender: 'Sistema', message: `${heroName} (com poder de Yellowfer) ativou "Segunda Chance"! O tempo pode ser revertido.`, timestamp: Date.now() });
-
-    closePowerInterface('yellowferSecondChanceInterface');
+    if (yellowferSecondChanceActive) {
+      alert("Yellowfer: Segunda Chance já está ativa.");
+      return;
+    }
+    const currentTime = Date.now();
+    await set(yellowferSecondChanceTimeRef, currentTime);
+    await set(yellowferSecondChanceActiveRef, true);
+    alert('Yellowfer: Segunda Chance ativada! Ponto de retorno definido.');
+    await push(globalChatRef, { sender: 'Sistema', message: `${heroName} ativou Segunda Chance! O tempo pode ser revertido!`, timestamp: Date.now() });
+    statusDisplay.innerText = `Segunda Chance Ativada! Ponto de retorno: ${new Date(currentTime).toLocaleTimeString()}`;
   }
 
-  async function triggerSecondChanceReturn() {
-    const heroName = currentActiveHero; // Can be a granted hero
-
+  async function activateYellowferVoltar(heroName) {
     if (yellowferSecondChanceActive && yellowferSecondChanceTimestamp) {
-      const timeAgo = Math.floor((Date.now() - yellowferSecondChanceTimestamp) / 1000);
-      alert(`${heroName} (via Yellowfer) voltou no tempo para o momento de ativação (${timeAgo} segundos atrás)!`);
+        const timeAgo = Math.floor((Date.now() - yellowferSecondChanceTimestamp) / 1000);
+        alert(`Yellowfer: Revertendo o tempo para o momento de ativação (${timeAgo} segundos atrás)!`);
+        await push(globalChatRef, { sender: 'Sistema', message: `${heroName} (com poder de Yellowfer) reverteu o tempo! As últimas ações foram desfeitas.`, timestamp: Date.now() });
 
-      await globalChatRef.push({ sender: 'Sistema', message: `${heroName} (com poder de Yellowfer) reverteu o tempo! As últimas ações foram desfeitas.`, timestamp: Date.now() });
+        const numMessagesToRemove = parseInt(prompt("Yellowfer: Quantas mensagens deseja 'desfazer' (remover do chat)? (Recomendado: 1-5)"), 10);
+        if (isNaN(numMessagesToRemove) || numMessagesToRemove <= 0) {
+            alert("Número inválido de mensagens para desfazer. Nenhuma mensagem removida.");
+            return;
+        }
 
-      const numMessagesToRemove = parseInt(prompt("Yellowfer: Quantas mensagens deseja 'desfazer' (remover do chat)? (Recomendado: 1-5)"), 10);
+        const messagesSnapshot = await get(globalChatRef);
+        const messagesData = messagesSnapshot.val(); // This will be an object {key: message_object}
+        if (!messagesData) {
+            alert("Nenhuma mensagem para desfazer.");
+            return;
+        }
 
-      if (isNaN(numMessagesToRemove) || numMessagesToRemove <= 0) {
-        alert("Número inválido de mensagens para desfazer. Nenhuma mensagem removida.");
-        return;
-      }
+        const messageKeys = Object.keys(messagesData).sort((a, b) => messagesData[a].timestamp - messagesData[b].timestamp); // Sort keys by timestamp
+        
+        let keysToDelete = [];
+        let messagesRemovedCount = 0;
+        // Iterate backwards from the latest messages
+        for (let i = messageKeys.length - 1; i >= 0 && messagesRemovedCount < numMessagesToRemove; i--) {
+            const key = messageKeys[i];
+            const message = messagesData[key];
+            // Do not remove the current system message about Yellowfer reversing time
+            if (!(message.sender === 'Sistema' && message.message.includes("reverteu o tempo!"))) {
+                keysToDelete.push(key);
+                messagesRemovedCount++;
+            }
+        }
 
-      // Get current messages, sort by timestamp if not already (Firebase usually keeps order)
-      let currentMessagesArray = Object.values(globalChatMessages).sort((a, b) => a.timestamp - b.timestamp);
-
-      // Find the index to start removing messages from, avoiding system messages about reversal
-      let messagesToRemoveCount = 0;
-      for (let i = currentMessagesArray.length - 1; i >= 0 && messagesToRemoveCount < numMessagesToRemove; i--) {
-          // Do not remove the current system message about Yellowfer reversing time
-          if (!(currentMessagesArray[i].sender === 'Sistema' && currentMessagesArray[i].message.includes("reverteu o tempo!"))) {
-              messagesToRemoveCount++;
-          }
-      }
-
-      // Remove messages from Firebase
-      const messagesSnapshot = await globalChatRef.once('value');
-      const messagesKeys = Object.keys(messagesSnapshot.val() || {});
-
-      // Keys to delete are the last 'messagesToRemoveCount' keys
-      const keysToDelete = messagesKeys.slice(messagesKeys.length - messagesToRemoveCount);
-
-      const updates = {};
-      keysToDelete.forEach(key => {
-          updates[key] = null; // Set to null to delete
-      });
-
-      if (Object.keys(updates).length > 0) {
-          await globalChatRef.update(updates);
-          alert(`${Object.keys(updates).length} mensagens foram desfeitas.`);
-          await globalChatRef.push({ sender: 'Sistema', message: `${heroName} desfez as últimas ${Object.keys(updates).length} mensagens do chat!`, timestamp: Date.now() });
-      } else {
-          alert("Nenhuma mensagem foi desfeita.");
-      }
-
+        if (keysToDelete.length > 0) {
+            const updates = {};
+            keysToDelete.forEach(key => {
+                updates[key] = null; // Set to null to delete
+            });
+            await update(globalChatRef, updates);
+            alert(`${keysToDelete.length} mensagens foram desfeitas.`);
+            await push(globalChatRef, { sender: 'Sistema', message: `${heroName} desfez as últimas ${keysToDelete.length} mensagens do chat!`, timestamp: Date.now() });
+        } else {
+            alert("Nenhuma mensagem foi desfeita.");
+        }
     } else {
       alert("Segunda Chance não está ativa ou ponto de retorno não definido.");
     }
   }
 
-  // --- Lindenbergue - Viajar ---
-
+  // --- Lindenbergue Powers ---
   async function activateViajar() {
-    const destination = document.getElementById('portalDestinationInput').value.trim();
-    const outputDisplay = document.getElementById('portalStatus');
     const heroName = 'Lindenbergue';
+    const destination = document.getElementById('portalDestinationInput').value.trim();
+    const portalStatusDisplay = document.getElementById('portalStatus');
 
     if (!destination) {
-      outputDisplay.innerText = 'Para onde deseja abrir o portal?';
+      portalStatusDisplay.innerText = 'Para onde deseja ir?';
       return;
     }
 
-    outputDisplay.innerText = `Lindenbergue abriu um portal para ${destination}!`;
-    // powerUsedRef and startTransformTimer handled in parseCommand
-    alert(`Lindenbergue abriu um portal para ${destination}!`);
+    // Check if Lindenbergue's power has been used
+    const powerWasUsed = (await get(ref(database, `powerUsedState/${heroName}`))).val();
+    if (powerWasUsed && chatRedirectState.active) { // If already redirected, can't open another portal. Assuming only one portal allowed
+        alert("Lindenbergue: Já existe um portal ativo ou redirecionamento. Feche-o primeiro.");
+        portalStatusDisplay.innerText = `Portal já ativo para ${chatRedirectState.toHero}.`;
+        return;
+    }
 
-    await globalChatRef.push({ sender: 'Sistema', message: `Lindenbergue abriu um portal para: "${destination}"!`, timestamp: Date.now() });
 
-    closePowerInterface('lindenbergueViajarInterface');
+    const confirmRedirect = confirm(`Lindenbergue: Deseja abrir um portal para "${destination}" e redirecionar mensagens de um herói para seu chat?`);
 
-    const targetHero = prompt("Lindenbergue: Para qual herói você deseja redirecionar o chat, ou acessar? (Nome completo do herói)");
-    if (HERO_NAMES.includes(targetHero) && targetHero !== heroName) {
-        const action = confirm(`Deseja redirecionar as mensagens de ${targetHero} para o seu chat (OK) ou apenas acessá-las (Cancelar)?`);
+    if (confirmRedirect) {
+        const targetHeroToRedirect = prompt("Lindenbergue: Qual herói terá suas mensagens redirecionadas para seu chat? (Nome completo do herói)");
+        if (!targetHeroToRedirect || !HERO_NAMES.includes(targetHeroToRedirect) || targetHeroToRedirect === heroName) {
+            alert('Lindenbergue: Alvo inválido ou você não pode redirecionar seu próprio chat. Redirecionamento cancelado.');
+            return;
+        }
+
         const newChatRedirectState = {
             active: true,
-            fromHero: targetHero,
+            fromHero: targetHeroToRedirect,
             toHero: heroName,
-            redirecting: action // true for redirect, false for just monitor (narrative)
+            destination: destination // Store destination for narrative
         };
-        await chatRedirectStateRef.set(newChatRedirectState);
+        await set(chatRedirectStateRef, newChatRedirectState);
 
-        if (action) {
-            alert(`Lindenbergue: Mensagens de ${targetHero} serão redirecionadas para o seu chat!`);
-            await globalChatRef.push({ sender: 'Sistema', message: `Lindenbergue está REDIRECIONANDO as comunicações de ${targetHero}!`, timestamp: Date.now() });
-        } else {
-            alert(`Lindenbergue: Você agora pode visualizar as mensagens de ${targetHero} em tempo real! (Isto é uma declaração narrativa para o monitoramento no momento)`);
-            await globalChatRef.push({ sender: 'Sistema', message: `Lindenbergue está MONITORANDO as comunicações de ${targetHero}!`, timestamp: Date.now() });
-        }
-    } else if (targetHero !== null) {
-        alert('Lindenbergue: Nome de herói inválido ou você não pode redirecionar seu próprio chat.');
+        alert(`Lindenbergue: Portal para "${destination}" aberto! Mensagens de ${targetHeroToRedirect} serão redirecionadas para o seu chat!`);
+        await push(globalChatRef, { sender: 'Sistema', message: `Lindenbergue abriu um portal para "${destination}" e está REDIRECIONANDO as comunicações de ${targetHeroToRedirect}!`, timestamp: Date.now() });
+        portalStatusDisplay.innerText = `Portal aberto para "${destination}". Redirecionando mensagens de ${targetHeroToRedirect}.`;
+
+    } else {
+        alert(`Lindenbergue: Portal para "${destination}" aberto para visualização.`);
+        await push(globalChatRef, { sender: 'Sistema', message: `Lindenbergue abriu um portal para "${destination}" para monitoramento.`, timestamp: Date.now() });
+        portalStatusDisplay.innerText = `Portal aberto para "${destination}" (monitorando).`;
     }
+
+    await set(ref(database, `powerUsedState/${heroName}`), true);
+    startTransformTimer(heroName);
   }
 
-  // --- Beast - Dragão de Elemento ---
-
+  // --- Beast Powers ---
   async function activateDragao() {
-    const element = document.getElementById('dragonElementInput').value.trim();
+    const element = document.getElementById('dragonElementInput').value.trim().toLowerCase();
     const outputDisplay = document.getElementById('dragonStatus');
     const heroName = 'Beast';
 
@@ -1589,9 +1734,8 @@ window.updateAkumaDisplay = updateAkumaDisplay;
       outputDisplay.innerText = 'Qual elemento deseja controlar?';
       return;
     }
-
     const validElements = ['fogo', 'agua', 'vento', 'terra'];
-    if (!validElements.includes(element.toLowerCase())) {
+    if (!validElements.includes(element)) {
       outputDisplay.innerText = 'Elemento inválido. Escolha Fogo, Água, Vento ou Terra.';
       return;
     }
@@ -1599,227 +1743,69 @@ window.updateAkumaDisplay = updateAkumaDisplay;
     let currentControlledElements = beastControlledElements;
     let newElementAdded = false;
 
-    if (!currentControlledElements.includes(element.toLowerCase())) {
-        currentControlledElements = [...currentControlledElements, element.toLowerCase()];
-        await beastControlledElementsRef.set(currentControlledElements);
-        newElementAdded = true;
+    if (!currentControlledElements.includes(element)) {
+      currentControlledElements = [...currentControlledElements, element];
+      await set(beastControlledElementsRef, currentControlledElements);
+      newElementAdded = true;
+    } else {
+        alert(`Beast: Você já controla o elemento ${element}.`);
+        outputDisplay.innerText = `Beast já controla o elemento ${element}! Elementos controlados: ${currentControlledElements.map(e => e.charAt(0).toUpperCase() + e.slice(1)).join(', ')}`;
+        return; // Don't trigger timer if already controlling
     }
 
     outputDisplay.innerText = `Beast agora controla o elemento ${element}! Elementos controlados: ${currentControlledElements.map(e => e.charAt(0).toUpperCase() + e.slice(1)).join(', ')}`;
     alert(`Beast agora controla o elemento ${element}!`);
 
     if (newElementAdded) {
-        await globalChatRef.push({ sender: 'Sistema', message: `Beast ativou o elemento: "${element.charAt(0).toUpperCase() + element.slice(1)}"! Elementos ativos: ${currentControlledElements.length}.`, timestamp: Date.now() });
-    }
+      await push(globalChatRef, { sender: 'Sistema', message: `Beast ativou o elemento: ${element.charAt(0).toUpperCase() + element.slice(1)}!`, timestamp: Date.now() });
 
-    if (currentControlledElements.length >= 3) {
-      // powerUsedRef and startTransformTimer for Beast are handled in parseCommand when 3 elements are hit
-      const targetHeroToBlock = prompt("Beast: Qual herói você deseja SILENCIAR por 30 segundos com seus elementos? (Nome completo do herói)");
-      await activateBeastSilence(targetHeroToBlock, heroName);
-
-    } else {
-        alert("Beast: Ainda não há 3 elementos controlados para usar o poder de silenciar.");
+      if (currentControlledElements.length >= 3) {
+        alert('Beast: Você ativou 3 elementos! O timer de 5 minutos foi iniciado.');
+        await set(ref(database, `powerUsedState/${heroName}`), true); // Mark power as used only when 3 elements are hit
+        startTransformTimer(heroName);
+      }
     }
-    closePowerInterface('beastDragaoInterface');
   }
 
-  async function activateBeastSilence(targetHeroToBlock, actingHeroName) {
-      const trimmedTargetHero = targetHeroToBlock.trim();
+  async function activateBeastSilence(args, grantedByHero = null) {
+    const heroName = grantedByHero || 'Beast'; // If granted, the hero who granted it
+    const targetHero = args.join(' ').trim();
+    if (!targetHero || !HERO_NAMES.includes(targetHero) || targetHero === heroName) {
+      alert(`${heroName}: Alvo inválido ou você não pode silenciar a si mesmo.`);
+      return;
+    }
 
-      if (!HERO_NAMES.includes(trimmedTargetHero) || trimmedTargetHero === actingHeroName) {
-          alert(`${actingHeroName}: Alvo inválido ou você não pode silenciar a si mesmo.`);
-          return;
-      }
+    alert(`${heroName}: Silenciando o chat de ${targetHero} por 15 segundos!`);
+    await set(ref(database, `chatBlockedState/${targetHero}`), true);
+    await push(globalChatRef, { sender: 'Sistema', message: `${heroName} usou Silêncio em ${targetHero}!`, timestamp: Date.now() });
 
-      await chatBlockedStateRef.child(trimmedTargetHero).set(true);
-      alert(`${trimmedTargetHero}'s chat is now BLOCKED by ${actingHeroName}'s elemental power!`);
-      await globalChatRef.push({ sender: 'Sistema', message: `${actingHeroName} SILENCIOU ${trimmedTargetHero}! Seu chat está bloqueado por 30 segundos!`, timestamp: Date.now() });
-
-      setTimeout(async () => {
-          await chatBlockedStateRef.child(trimmedTargetHero).set(false);
-          alert(`${trimmedTargetHero}'s chat is now UNBLOCKED.`);
-        
-          await set(push(globalChatRef), {
-  sender: 'Sistema',
-  message: `Beast usou Silêncio em ${targetHero}.`,
-  timestamp: Date.now()
-});
+    setTimeout(async () => {
+      await set(ref(database, `chatBlockedState/${targetHero}`), false);
+      alert(`${targetHero}'s chat foi desbloqueado!`);
+      await push(globalChatRef, { sender: 'Sistema', message: `O chat de ${targetHero} foi desbloqueado!`, timestamp: Date.now() });
+    }, 15000); // Silence for 15 seconds
   }
 
   // --- Evolução do Miraculous ---
-
   async function evolveHero(heroName) {
-    if (evolvedHeroes[heroName]) {
+    const isEvolved = (await get(ref(database, `heroEvolved/${heroName}`))).val();
+    if (isEvolved) {
       alert(`${heroName} já atingiu a evolução máxima e aboliu a regra dos 5 minutos!`);
       return;
     }
     const confirmEvolve = confirm(`Deseja evoluir o Miraculous de ${heroName}? Isso abolirá a regra dos 5 minutos para ele!`);
     if (confirmEvolve) {
-      await heroEvolvedRef.child(heroName).set(true);
+      await set(ref(database, `heroEvolved/${heroName}`), true);
       alert(`O Miraculous de ${heroName} evoluiu! A regra dos 5 minutos foi abolida para ${heroName}!`);
-
       if (transformTimers[heroName]) {
         clearTimeout(transformTimers[heroName]);
         delete transformTimers[heroName];
-        await heroTransformEndTimesRef.child(heroName).remove();
+        await remove(ref(database, `heroTransformEndTimes/${heroName}`));
         hideDestransformTimer();
       }
-      await globalChatRef.push({ sender: 'Sistema', message: `O Miraculous de ${heroName} EVOLUIU! O limite de tempo foi abolido!`, timestamp: Date.now() });
+      await push(globalChatRef, { sender: 'Sistema', message: `O Miraculous de ${heroName} EVOLUIU! O limite de tempo foi abolido!`, timestamp: Date.now() });
     }
   }
-
-  // --- Função para enviar mensagem (com detecção de comando) ---
-  async function sendMessage(senderName, heroId) {
-    const chatInput = document.getElementById(`chatInput_${heroId}`);
-    let message = chatInput.value.trim();
-
-    if (!message) {
-      return;
-    }
-
-    if (chatBlockedState[senderName]) {
-        alert(`${senderName}: Meu chat está bloqueado! Não consigo enviar mensagens!`);
-        chatInput.value = '';
-        return;
-    }
-
-    // NOVO: Impedir comandos se o chat estiver invertido
-    if (invertedChatState.active && invertedChatState.targetHero === senderName && message.startsWith('/')) {
-        alert(`${senderName}: Seu chat está invertido! Não é possível usar comandos agora.`);
-        chatInput.value = '';
-        return;
-    }
-
-    if (message.startsWith('/')) {
-        const commandProcessed = await parseCommand(message, senderName);
-        if (commandProcessed) {
-            chatInput.value = '';
-            return;
-        }
-        alert(`Comando "${message}" inválido ou não aplicável para ${senderName}.`);
-        chatInput.value = '';
-        return;
-    }
-
-    let finalSender = senderName;
-    let finalMessage = message;
-    let originalSender = senderName; // To keep track of the original sender for effects
-
-    // CORDAS DE FANTOCHE (Abrax) - Se Abrax está ativo e manipulando este herói
-    if (senderName === 'Abrax' && abraxPuppetStringsState.active && abraxPuppetStringsState.messagesLeft > 0) {
-        finalSender = abraxPuppetStringsState.targetHero;
-        finalMessage = `(Mensagem manipulada por Abrax): ${message}`;
-        await abraxPuppetStringsStateRef.update({ messagesLeft: abraxPuppetStringsState.messagesLeft - 1 });
-        if (abraxPuppetStringsState.messagesLeft - 1 <= 0) {
-            await abraxPuppetStringsStateRef.set({ active: false, targetHero: '', messagesLeft: 0 });
-            alert(`As cordas de fantoche de ${abraxPuppetStringsState.targetHero} foram desativadas.`);
-            await globalChatRef.push({ sender: 'Sistema', message: `As cordas de fantoche de ${abraxPuppetStringsState.targetHero} foram desativadas!`, timestamp: Date.now() });
-        }
-    }
-    // REDIRECIONAMENTO DE CHAT (Lindenbergue)
-    else if (chatRedirectState.active && chatRedirectState.fromHero === senderName && chatRedirectState.toHero !== senderName && chatRedirectState.redirecting) {
-        finalSender = `${chatRedirectState.toHero} (Redirecionado)`;
-        finalMessage = `(Mensagem de ${originalSender} via portal: "${message}")`;
-    }
-
-
-    // EFEITO DE CHAT DO AKUMATIZADO (Psique)
-    if (akumatizedEffectOnChat.active && akumatizedEffectOnChat.name && akumatizedEffectOnChat.name === senderName) {
-        if (akumatizedEffectOnChat.distortedMessages) {
-            finalMessage = `~ ${message.split('').reverse().join('')} ~`;
-        }
-        finalSender = `Akumatizado (${senderName})`;
-    }
-
-    // NOVO: EFEITO DE INVERSÃO DO CHAT (Abrax) - Este é para a *visão do emissor* e conteúdo da mensagem.
-    // A inversão visual para o *alvo* é tratada em renderGlobalChat com base em invertedChatState.targetHero
-    if (invertedChatState.active && invertedChatState.targetHero === senderName) {
-        const words = finalMessage.split(' ');
-        const invertedWords = words.map(word => word.split('').reverse().join(''));
-        finalMessage = invertedWords.reverse().join(' ');
-        alert(`Sua mensagem foi invertida por Abrax: "${finalMessage}"`); // Alerta o emissor
-    }
-
-
-    const newMessage = { sender: finalSender, message: finalMessage, originalSender: originalSender, timestamp: Date.now() };
-    await globalChatRef.push(newMessage);
-    chatInput.value = '';
-  }
-    window.sendMessage = sendMessage;
-  // --- Inicialização ao carregar a página ---
-  
-window.onload = async function () {
-  setupFirebaseListeners(); // Start listening to Firebase data
-
-  // Check for existing transform timers and restart if necessary
-  const snapshot = await get(heroTransformEndTimesRef);
-  const storedEndTimes = snapshot.val() || {};
-
-  for (const hero in storedEndTimes) {
-    if (storedEndTimes.hasOwnProperty(hero) && !evolvedHeroes[hero]) {
-      const endTime = storedEndTimes[hero];
-      const timeLeft = endTime - Date.now();
-
-      if (timeLeft > 0) {
-        if (transformTimers[hero]) clearTimeout(transformTimers[hero]);
-        transformTimers[hero] = setTimeout(() => {
-          alert(`${hero} destransformou!`);
-          resetHeroState(hero);
-          hideDestransformTimer();
-          if (currentActiveHero === hero) {
-            closeInterface(`${hero.toLowerCase()}Interface`);
-          }
-        }, timeLeft);
-      } else {
-        resetHeroState(hero); // Time already passed
-      }
-    }
-  }
-
-  // If a hero was active before refresh and has a timer, display it
-  const lastActiveHeroOnLoad = localStorage.getItem('lastActiveHero');
-  if (
-    lastActiveHeroOnLoad &&
-    storedEndTimes[lastActiveHeroOnLoad] &&
-    !evolvedHeroes[lastActiveHeroOnLoad] &&
-    !(psiqueGrantedPower.active &&
-      psiqueGrantedPower.targetHero === lastActiveHeroOnLoad &&
-      psiqueGrantedPower.grantedPowerType === 'poder_ilimitado')
-  ) {
-    currentActiveHero = lastActiveHeroOnLoad;
-    updateDestransformTimerDisplay(lastActiveHeroOnLoad, storedEndTimes[lastActiveHeroOnLoad]);
-  }
-
-  renderGlobalChat();
-  updateAkumaDisplay();
-  renderAkumaChat();
-};
-
-// Escutar ENTER para enviar mensagens no chat
-document.addEventListener('keypress', function (e) {
-  if (e.key === 'Enter') {
-    const activeInterface = document.querySelector('.hero-interface[style*="display: flex"]');
-    if (activeInterface) {
-      const heroId = activeInterface.id.replace('Interface', '');
-      const senderName = heroId.charAt(0).toUpperCase() + heroId.slice(1);
-      const chatInput = document.getElementById(`chatInput_${heroId}`);
-      const akumaChatInput = document.getElementById('akumaChatInput');
-
-      if (chatInput && document.activeElement === chatInput) {
-        sendMessage(senderName, heroId);
-      } else if (heroId === 'psique' && akumaChatInput && document.activeElement === akumaChatInput) {
-        sendAkumaMessage(senderName);
-      } else if (
-        akumaState.privateChatActive &&
-        akumaState.name === senderName &&
-        akumaChatInput &&
-        document.activeElement === akumaChatInput
-      ) {
-        sendAkumaMessage(senderName); // Akumatized person sending to akuma chat
-      }
-    }
-  }
-});
-</script>
+  </script>
 </body>
 </html>

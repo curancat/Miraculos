@@ -708,16 +708,22 @@
 
   function beast() {
     const transforma = prompt("Frase de transformação:");
-    if (transforma && transforma.toLowerCase() === 'rugido') {
-      alert("Stompp! Rugido!");
+    if (transforma && transforma.toLowerCase() === 'exatidão') {
+      alert("loong exatidão");
       showInterface('beastInterface', 'Beast');
     } else if (transforma !== null) {
-      alert("Diga ao Stompp Sua frase de transformação!");
+      alert("Diga ao loong Sua frase de transformação!");
     } else {
       alert('Ordem Nula!');
     }
   }
 
+    window.litlegot = litlegot;
+    window.abrax = abrax;
+    window.psique = psique;
+    window.yellowfer = yellowfer;
+    window.lindenbergue = lindenbergue;
+    window.beast = beast;
   // --- Interface Control Functions ---
   function showInterface(interfaceId, heroName) {
     document.querySelectorAll('.hero-interface, .power-interface').forEach(el => el.style.display = 'none');
